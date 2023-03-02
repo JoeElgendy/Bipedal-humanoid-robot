@@ -40,7 +40,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/base_link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/base_link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -80,7 +80,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Upper_Shoulder_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Upper_Shoulder_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -138,7 +138,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -196,7 +196,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -254,7 +254,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -312,7 +312,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -365,7 +365,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Upper_Shoulder_Motor_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Upper_Shoulder_Motor_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -423,7 +423,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -481,7 +481,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -539,7 +539,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -597,7 +597,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -650,7 +650,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -708,7 +708,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -766,7 +766,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -824,7 +824,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -877,7 +877,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Rot_Hip_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Rot_Hip_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -935,7 +935,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Hip_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Hip_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -993,7 +993,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1051,7 +1051,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1109,7 +1109,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Calf_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Calf_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1162,7 +1162,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Calf_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Calf_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1220,7 +1220,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Right_Foot_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Right_Foot_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1273,7 +1273,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Rot_Hip_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Rot_Hip_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1331,7 +1331,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Hip_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Hip_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1389,7 +1389,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1447,7 +1447,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1505,7 +1505,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Calf_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Calf_Link_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1558,7 +1558,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Calf_Joint.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Calf_Joint_col.STL" />
       </geometry>
     </collision>
   </link>
@@ -1616,7 +1616,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://Humanoid_trial_v1/meshes/Left_Foot_Link.STL" />
+          filename="package://Humanoid_trial_v1/meshes/Left_Foot_Link_col.STL" />
       </geometry>
     </collision>
   </link>
