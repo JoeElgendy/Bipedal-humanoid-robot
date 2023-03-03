@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="Humanoid_trial_v1">
+    <link name="base_link">
+        
+<inertial>
+            <origin xyz="0.0430176491752011 -0.000453182569063348 0.418538866393106" rpy="0 0 0" />
+            <mass value="1.49334918144846" />
+            <inertia ixx="0.00479715486062736" ixy="-1.51104017800224E-06" ixz="-0.000448319936256381" iyy="0.00341285221779866" iyz="-2.75696218680279E-06" izz="0.00294236665937348" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/base_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/base_link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Right_Upper_Shoulder_Link">
+        
+<inertial>
+            <origin xyz="-1.04083408558608E-17 0.0155156048759659 -1.38777878078145E-17" rpy="0 0 0" />
+            <mass value="0.0623876643494411" />
+            <inertia ixx="2.27108792085224E-05" ixy="-1.18572491683778E-20" ixz="-1.3448862199829E-20" iyy="3.90809536959519E-05" iyz="-1.37253890133102E-21" izz="4.97719837636778E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Upper_Shoulder_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Upper_Shoulder_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Upper_Shoulder_Link" type="revolute">
+        <origin xyz="0.045 0.0862 0.482793745640597" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="Right_Upper_Shoulder_Link" />
+        <axis xyz="0 1 0" />
+        <limit lower="-3.14" upper="3.14" effort="8.4" velocity="4.712" />
+    </joint>
+    <link name="Right_Mid_Shoulder_Motor_joint">
+        
+<inertial>
+            <origin xyz="0.0258952607067394 3.17406045891033E-10 -0.0149429057817276" rpy="0 0 0" />
+            <mass value="0.0736647083727735" />
+            <inertia ixx="2.46247283514012E-05" ixy="-5.19855700065355E-13" ixz="-2.88599141150525E-07" iyy="2.86365059019946E-05" iyz="-2.16737190574932E-12" izz="1.6170461970441E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Mid_Shoulder_Motor_joint" type="revolute">
+        <origin xyz="-0.026 0.0345 0" rpy="0 0 0" />
+        <parent link="Right_Upper_Shoulder_Link" />
+        <child link="Right_Mid_Shoulder_Motor_joint" />
+        <axis xyz="1 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Right_Mid_Shoulder_Motor_Link">
+        
+<inertial>
+            <origin xyz="0.0269879659134012 7.80769137537218E-08 -0.0706544117353011" rpy="0 0 0" />
+            <mass value="0.0806358441704838" />
+            <inertia ixx="4.61390252483244E-05" ixy="-1.32513604909904E-20" ixz="4.40177156678979E-20" iyy="7.02676065762006E-05" iyz="2.79105262089769E-10" izz="4.6791397698938E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Mid_Shoulder_Motor_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Mid_Shoulder_Motor_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Right_Mid_Shoulder_Motor_joint" />
+        <child link="Right_Mid_Shoulder_Motor_Link" />
+        <axis xyz="0 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Right_Lower_Shoulder_Motor_Joint">
+        
+<inertial>
+            <origin xyz="0.0251047392932605 -3.17406045891033E-10 -0.0149429057817277" rpy="0 0 0" />
+            <mass value="0.0736647083727734" />
+            <inertia ixx="2.46247283514012E-05" ixy="-5.19855698213995E-13" ixz="2.88599141150525E-07" iyy="2.86365059019946E-05" iyz="2.16737190554142E-12" izz="1.6170461970441E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Lower_Shoulder_Motor_Joint" type="revolute">
+        <origin xyz="0.0023000000000001 0 -0.1116" rpy="0 0 0" />
+        <parent link="Right_Mid_Shoulder_Motor_Link" />
+        <child link="Right_Lower_Shoulder_Motor_Joint" />
+        <axis xyz="1 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.49" />
+    </joint>
+    <link name="Right_Lower_Shoulder_Motor_Link">
+        
+<inertial>
+            <origin xyz="0.025 0.0174564345978791 -0.0759303261235977" rpy="0 0 0" />
+            <mass value="0.0424656515800133" />
+            <inertia ixx="8.19300764676948E-05" ixy="-9.88235341642274E-21" ixz="-1.51746139564742E-20" iyy="8.64054181304533E-05" iyz="-5.75845941734109E-06" izz="1.02790189173541E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Lower_Shoulder_Motor_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Lower_Shoulder_Motor_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Right_Lower_Shoulder_Motor_Joint" />
+        <child link="Right_Lower_Shoulder_Motor_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    <link name="Left_Upper_Shoulder_Motor_Link">
+        
+<inertial>
+            <origin xyz="-1.56125112837913E-17 -0.0155156048759659 6.93889390390723E-18" rpy="0 0 0" />
+            <mass value="0.0623876643494411" />
+            <inertia ixx="2.27108792085224E-05" ixy="7.05033835013636E-21" ixz="-9.55551127244306E-22" iyy="3.90809536959519E-05" iyz="-4.71413279327172E-21" izz="4.97719837636778E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Upper_Shoulder_Motor_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Upper_Shoulder_Motor_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Upper_Shoulder_Motor_Link" type="revolute">
+        <origin xyz="0.045 -0.0862 0.482793745640597" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="Left_Upper_Shoulder_Motor_Link" />
+        <axis xyz="0 -1 0" />
+        <limit lower="-3.14" upper="3.14" effort="8.4" velocity="4.712" />
+    </joint>
+    <link name="Left_Mid_Shoulder_Motor_Joint">
+        
+<inertial>
+            <origin xyz="0.0258952607067394 3.17406712024848E-10 -0.0149429057817259" rpy="0 0 0" />
+            <mass value="0.0736647083727734" />
+            <inertia ixx="2.46247283514012E-05" ixy="-5.1985570165149E-13" ixz="-2.88599141150519E-07" iyy="2.86365059019945E-05" iyz="-2.16737191193812E-12" izz="1.6170461970441E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Mid_Shoulder_Motor_Joint" type="revolute">
+        <origin xyz="-0.026 -0.0345 0" rpy="0 0 0" />
+        <parent link="Left_Upper_Shoulder_Motor_Link" />
+        <child link="Left_Mid_Shoulder_Motor_Joint" />
+        <axis xyz="1 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Mid_Shoulder_Motor_Link">
+        
+<inertial>
+            <origin xyz="0.0246879659134011 7.80769138231108E-08 0.040945588264699" rpy="0 0 0" />
+            <mass value="0.0806358441704837" />
+            <inertia ixx="4.61390252483243E-05" ixy="2.28733559332138E-20" ixz="3.30539070777911E-20" iyy="7.02676065762005E-05" iyz="2.79105262104152E-10" izz="4.6791397698938E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Mid_Shoulder_Motor_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Mid_Shoulder_Motor_Link" type="fixed">
+        <origin xyz="0.00230000000000015 0 -0.111599999999998" rpy="0 0 0" />
+        <parent link="Left_Mid_Shoulder_Motor_Joint" />
+        <child link="Left_Mid_Shoulder_Motor_Link" />
+        <axis xyz="0 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Lower_Shoulder_Motor_Joint">
+        
+<inertial>
+            <origin xyz="0.0251047392932605 -3.17405990379882E-10 -0.0149429057817277" rpy="0 0 0" />
+            <mass value="0.0736647083727735" />
+            <inertia ixx="2.46247283514012E-05" ixy="-5.19855694966481E-13" ixz="2.88599141150531E-07" iyy="2.86365059019946E-05" iyz="2.16737192093707E-12" izz="1.6170461970441E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Lower_Shoulder_Motor_Joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Left_Mid_Shoulder_Motor_Link" />
+        <child link="Left_Lower_Shoulder_Motor_Joint" />
+        <axis xyz="1 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Lower_Shoulder_Motor_Link">
+        
+<inertial>
+            <origin xyz="0.0249999999999999 -0.0174564345978791 -0.0759303261235977" rpy="0 0 0" />
+            <mass value="0.0424656515800132" />
+            <inertia ixx="8.19300764676947E-05" ixy="-1.58460062384994E-20" ixz="2.25591490530647E-20" iyy="8.64054181304532E-05" iyz="5.75845941734104E-06" izz="1.02790189173541E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Lower_Shoulder_Motor_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Lower_Shoulder_Motor_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Left_Lower_Shoulder_Motor_Joint" />
+        <child link="Left_Lower_Shoulder_Motor_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    <link name="Head_Horizontal_Joint">
+        
+<inertial>
+            <origin xyz="-3.33066907387547E-16 -3.40005801291454E-16 -0.0030152590373571" rpy="0 0 0" />
+            <mass value="0.00111626148570573" />
+            <inertia ixx="4.82639155849164E-08" ixy="-1.73219057791091E-22" ixz="1.40385348457801E-22" iyy="4.82639155849167E-08" iyz="1.07574858178469E-22" izz="9.3541039021488E-08" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.0980392156862745 0.0980392156862745 0.0980392156862745 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Head_Horizontal_Joint" type="fixed">
+        <origin xyz="0.0299 0 0.52423" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="Head_Horizontal_Joint" />
+        <axis xyz="0 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="1.078" velocity="6.159" />
+    </joint>
+    <link name="Head_Horizontal_Link">
+        
+<inertial>
+            <origin xyz="-7.87562638499039E-06 0.00201115454739927 0.0487202946714503" rpy="0 0 0" />
+            <mass value="0.303465343153983" />
+            <inertia ixx="0.000344175728907107" ixy="3.23416736013699E-08" ixz="2.14300139921825E-08" iyy="0.000252456081700297" iyz="1.03645901492167E-05" izz="0.000226216286281721" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Horizontal_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Head_Horizontal_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Head_Horizontal_Joint" />
+        <child link="Head_Horizontal_Link" />
+        <axis xyz="0 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="1.078" velocity="6.159" />
+    </joint>
+    <link name="Head_Vertical_Joint">
+        
+<inertial>
+            <origin xyz="-4.47258300348224E-06 0.0030152557202275 3.60822483003176E-16" rpy="0 0 0" />
+            <mass value="0.00111626148570573" />
+            <inertia ixx="4.82640152048832E-08" ixy="-6.7160223193471E-11" ixz="1.23317786206834E-22" iyy="9.35409394015219E-08" iyz="5.79189999909827E-23" izz="4.82639155849166E-08" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.0980392156862745 0.0980392156862745 0.0980392156862745 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Head_Vertical_Joint" type="revolute">
+        <origin xyz="4.22745157250641E-05 -0.0284999686467428 0.0515" rpy="0 0 0" />
+        <parent link="Head_Horizontal_Link" />
+        <child link="Head_Vertical_Joint" />
+        <axis xyz="0.00148331634123044 -0.999998899885711 0" />
+        <limit lower="-3.14" upper="3.14" effort="1.078" velocity="6.519" />
+    </joint>
+    <link name="Head_Vertical_Link">
+        
+<inertial>
+            <origin xyz="-0.0079740313537437 0.0257820432407331 -0.00633555775853176" rpy="0 0 0" />
+            <mass value="0.0336929106124403" />
+            <inertia ixx="1.23288476738362E-05" ixy="1.61107638846102E-07" ixz="7.16221856227105E-07" iyy="1.33519522742047E-05" iyz="-1.3390176525745E-07" izz="3.28226792350478E-06" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.0980392156862745 0.0980392156862745 0.0980392156862745 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Head_Vertical_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Head_Vertical_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Head_Vertical_Joint" />
+        <child link="Head_Vertical_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    <link name="Right_Rot_Hip_Link">
+        
+<inertial>
+            <origin xyz="-1.38777878078145E-17 -3.90312782094782E-17 -0.0108026519831317" rpy="0 0 0" />
+            <mass value="0.0642422648022387" />
+            <inertia ixx="4.229626009049E-05" ixy="-1.92822551221405E-21" ixz="-1.20711691044153E-20" iyy="1.91108022562779E-05" iyz="-2.09596554273217E-20" izz="4.09654383516233E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Rot_Hip_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Rot_Hip_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Rot_Hip_Link" type="revolute">
+        <origin xyz="0.045 0.0576361191366067 0.32318" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="Right_Rot_Hip_Link" />
+        <axis xyz="0 0 1" />
+        <limit lower="-3.14" upper="3.14" effort="8.4" velocity="4.712" />
+    </joint>
+    <link name="Right_Hip_Joint">
+        
+<inertial>
+            <origin xyz="-3.17406042421586E-10 -0.0261047392932606 -0.0149429057817277" rpy="0 0 0" />
+            <mass value="0.0736647083727735" />
+            <inertia ixx="2.86365059019946E-05" ixy="5.19855697428651E-13" ixz="2.16737191403036E-12" iyy="2.46247283514012E-05" iyz="-2.88599141150534E-07" izz="1.61704619704411E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Hip_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Hip_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Hip_Joint" type="revolute">
+        <origin xyz="0 0.026 -0.025" rpy="0 0 0" />
+        <parent link="Right_Rot_Hip_Link" />
+        <child link="Right_Hip_Joint" />
+        <axis xyz="0 1 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Right_Thigh_Link">
+        
+<inertial>
+            <origin xyz="-0.0014546014040024 -0.0245457629701891 0.0427776710158242" rpy="0 0 0" />
+            <mass value="0.255499669362129" />
+            <inertia ixx="0.000214826126005653" ixy="2.02832904894491E-07" ixz="4.17202670275441E-06" iyy="0.000173917558050204" iyz="-4.16800126098555E-06" izz="9.72909468757748E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Thigh_Link" type="fixed">
+        <origin xyz="0.00200000000000002 -0.00199999999999994 -0.12045" rpy="0 0 0" />
+        <parent link="Right_Hip_Joint" />
+        <child link="Right_Thigh_Link" />
+        <axis xyz="0 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Right_Thigh_Joint">
+        
+<inertial>
+            <origin xyz="-3.17406037217416E-10 -0.0261047392932606 -0.0149429057817276" rpy="0 0 0" />
+            <mass value="0.0736647083727736" />
+            <inertia ixx="2.86365059019947E-05" ixy="5.19855699165481E-13" ixz="2.16737190585169E-12" iyy="2.46247283514012E-05" iyz="-2.88599141150551E-07" izz="1.61704619704411E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Thigh_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Thigh_Joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Right_Thigh_Link" />
+        <child link="Right_Thigh_Joint" />
+        <axis xyz="0 -1 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Right_Calf_Link">
+        
+<inertial>
+            <origin xyz="-4.54600153295542E-07 -0.026 0.0551065300535402" rpy="0 0 0" />
+            <mass value="0.204789824162128" />
+            <inertia ixx="0.000359428148565619" ixy="-1.09069880921943E-20" ixz="5.4080456485365E-09" iyy="0.000311485239434949" iyz="-6.31128185290975E-20" izz="0.000129082856540219" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Calf_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Calf_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Calf_Link" type="fixed">
+        <origin xyz="0 0 -0.14763" rpy="0 0 0" />
+        <parent link="Right_Thigh_Joint" />
+        <child link="Right_Calf_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    <link name="Right_Calf_Joint">
+        
+<inertial>
+            <origin xyz="-0.0149429057817277 -0.0261047392932606 3.17405934868731E-10" rpy="0 0 0" />
+            <mass value="0.0736647083727734" />
+            <inertia ixx="1.6170461970441E-05" ixy="-2.88599141150527E-07" ixz="-2.16737191618278E-12" iyy="2.46247283514012E-05" iyz="-5.19855694980773E-13" izz="2.86365059019946E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Calf_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Calf_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Calf_Joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Right_Calf_Link" />
+        <child link="Right_Calf_Joint" />
+        <axis xyz="0 1 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Right_Foot_Link">
+        
+<inertial>
+            <origin xyz="-0.0266673647470949 -0.0259998700791342 -0.0229259121530594" rpy="0 0 0" />
+            <mass value="0.154600544458305" />
+            <inertia ixx="4.7616957773364E-05" ixy="1.07372108569465E-10" ixz="7.76246239578988E-06" iyy="0.00021156033981235" iyz="-2.63196107697146E-09" izz="0.000245380775539227" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Foot_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Right_Foot_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Right_Foot_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Right_Calf_Joint" />
+        <child link="Right_Foot_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    <link name="Left_Rot_Hip_Link">
+        
+<inertial>
+            <origin xyz="-1.04083408558608E-17 -4.16333634234434E-17 -0.0108026519831317" rpy="0 0 0" />
+            <mass value="0.0642422648022388" />
+            <inertia ixx="4.22962600904901E-05" ixy="-3.27207586857929E-21" ixz="-1.97760315504255E-20" iyy="1.9110802256278E-05" iyz="-2.74627591718684E-20" izz="4.09654383516234E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Rot_Hip_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Rot_Hip_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Rot_Hip_Link" type="revolute">
+        <origin xyz="0.045 -0.0576361191366067 0.32318" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="Left_Rot_Hip_Link" />
+        <axis xyz="0 0 1" />
+        <limit lower="-3.14" upper="3.14" effort="8.4" velocity="4.712" />
+    </joint>
+    <link name="Left_Hip_Joint">
+        
+<inertial>
+            <origin xyz="3.17406094463291E-10 0.0261047392932606 -0.0149429057817277" rpy="0 0 0" />
+            <mass value="0.0736647083727735" />
+            <inertia ixx="2.86365059019947E-05" ixy="5.19855696434263E-13" ixz="-2.16737189675631E-12" iyy="2.46247283514012E-05" iyz="2.88599141150528E-07" izz="1.61704619704411E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Hip_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Hip_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Hip_Joint" type="revolute">
+        <origin xyz="0 -0.026 -0.025" rpy="0 0 0" />
+        <parent link="Left_Rot_Hip_Link" />
+        <child link="Left_Hip_Joint" />
+        <axis xyz="0 1 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Thigh_Link">
+        
+<inertial>
+            <origin xyz="-0.00145460140400241 0.0274542370298109 0.0427776710158242" rpy="0 0 0" />
+            <mass value="0.255499669362129" />
+            <inertia ixx="0.000214826126005653" ixy="2.02832904894504E-07" ixz="4.17202670275439E-06" iyy="0.000173917558050204" iyz="-4.16800126098552E-06" izz="9.72909468757747E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Thigh_Link" type="fixed">
+        <origin xyz="0.00190000000000005 -0.00200000000000003 -0.12045" rpy="0 0 0" />
+        <parent link="Left_Hip_Joint" />
+        <child link="Left_Thigh_Link" />
+        <axis xyz="0 0 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Thigh_Joint">
+        
+<inertial>
+            <origin xyz="-3.17406040686863E-10 0.0258952607067394 -0.0149429057817277" rpy="0 0 0" />
+            <mass value="0.0736647083727735" />
+            <inertia ixx="2.86365059019947E-05" ixy="5.19855700981058E-13" ixz="2.16737192038797E-12" iyy="2.46247283514012E-05" iyz="-2.88599141150548E-07" izz="1.61704619704411E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Thigh_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Thigh_Joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Left_Thigh_Link" />
+        <child link="Left_Thigh_Joint" />
+        <axis xyz="0 -1 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Calf_Link">
+        
+<inertial>
+            <origin xyz="-4.54600153295542E-07 0.0260000000000001 0.0551065300535403" rpy="0 0 0" />
+            <mass value="0.204789824162128" />
+            <inertia ixx="0.000359428148565619" ixy="-9.54664746628735E-21" ixz="5.40804564853616E-09" iyy="0.000311485239434949" iyz="-1.60767959261005E-19" izz="0.000129082856540219" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Calf_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Calf_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Calf_Link" type="fixed">
+        <origin xyz="0 0 -0.14763" rpy="0 0 0" />
+        <parent link="Left_Thigh_Joint" />
+        <child link="Left_Calf_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    <link name="Left_Calf_Joint">
+        
+<inertial>
+            <origin xyz="-0.0149429057817277 0.0258952607067396 3.17406045891033E-10" rpy="0 0 0" />
+            <mass value="0.0736647083727734" />
+            <inertia ixx="1.6170461970441E-05" ixy="-2.88599141150524E-07" ixz="-2.16737192274747E-12" iyy="2.46247283514012E-05" iyz="-5.19855701842151E-13" izz="2.86365059019946E-05" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Calf_Joint.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Calf_Joint_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Calf_Joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Left_Calf_Link" />
+        <child link="Left_Calf_Joint" />
+        <axis xyz="0 1 0" />
+        <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
+    </joint>
+    <link name="Left_Foot_Link">
+        
+<inertial>
+            <origin xyz="-0.0316673518136692 0.0260001299208334 -0.0229259131219174" rpy="0 0 0" />
+            <mass value="0.154600582546389" />
+            <inertia ixx="4.76169659971465E-05" ixy="1.07372462491056E-10" ixz="7.76247168442804E-06" iyy="0.000211560460583717" iyz="-2.63196108588119E-09" izz="0.00024538090046163" />
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Foot_Link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://Humanoid_trial_v1/meshes/Left_Foot_Link_col.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="Left_Foot_Link" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Left_Calf_Joint" />
+        <child link="Left_Foot_Link" />
+        <axis xyz="0 0 0" />
+    </joint>
+    
+<transmission name="trans_Right_Upper_Shoulder_Link">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Upper_Shoulder_Link">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Upper_Shoulder_Link_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Right_Mid_Shoulder_Motor_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Mid_Shoulder_Motor_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Mid_Shoulder_Motor_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Right_Lower_Shoulder_Motor_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Lower_Shoulder_Motor_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Lower_Shoulder_Motor_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Upper_Shoulder_Motor_Link">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Upper_Shoulder_Motor_Link">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Upper_Shoulder_Motor_Link_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Mid_Shoulder_Motor_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Mid_Shoulder_Motor_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Mid_Shoulder_Motor_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Lower_Shoulder_Motor_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Lower_Shoulder_Motor_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Lower_Shoulder_Motor_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Head_Vertical_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Head_Vertical_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Head_Vertical_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Right_Rot_Hip_Link">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Rot_Hip_Link">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Rot_Hip_Link_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Right_Hip_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Hip_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Hip_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Right_Thigh_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Thigh_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Thigh_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Right_Calf_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Right_Calf_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Right_Calf_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Rot_Hip_Link">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Rot_Hip_Link">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Rot_Hip_Link_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Hip_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Hip_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Hip_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Thigh_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Thigh_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Thigh_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_Left_Calf_Joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="Left_Calf_Joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="Left_Calf_Joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+</robot>
