@@ -1,0 +1,73 @@
+# Simulation settings for using moveit_sim_controllers
+moveit_sim_hw_interface:
+  joint_model_group: Right_Leg
+  joint_model_group_pose: 1.Heel strike(initial_contact)
+# Settings for ros_control_boilerplate control loop
+generic_hw_control_loop:
+  loop_hz: 300
+  cycle_time_error_threshold: 0.01
+# Settings for ros_control hardware interface
+hardware_interface:
+  joints:
+    - Head_Vertical_Joint
+    - Left_Rot_Hip_Link
+    - Left_Hip_Joint
+    - Left_Thigh_Joint
+    - Left_Calf_Joint
+    - Left_Upper_Shoulder_Motor_Link
+    - Left_Mid_Shoulder_Motor_Joint
+    - Left_Lower_Shoulder_Motor_Joint
+    - Right_Rot_Hip_Link
+    - Right_Hip_Joint
+    - Right_Thigh_Joint
+    - Right_Calf_Joint
+    - Right_Upper_Shoulder_Link
+    - Right_Mid_Shoulder_Motor_joint
+    - Right_Lower_Shoulder_Motor_Joint
+  sim_control_mode: 1  # 0: position, 1: velocity
+# Publish all joint states
+# Creates the /joint_states topic necessary in ROS
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+controller_list:
+  - name: Head_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      Head_Vertical_Joint
+  - name: Left_Leg_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - Left_Rot_Hip_Link
+      - Left_Hip_Joint
+      - Left_Thigh_Joint
+      - Left_Calf_Joint
+  - name: Left_Shoulder_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - Left_Upper_Shoulder_Motor_Link
+      - Left_Mid_Shoulder_Motor_Joint
+      - Left_Lower_Shoulder_Motor_Joint
+  - name: Right_Leg_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - Right_Rot_Hip_Link
+      - Right_Hip_Joint
+      - Right_Thigh_Joint
+      - Right_Calf_Joint
+  - name: Right_Shoulder_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - Right_Upper_Shoulder_Link
+      - Right_Mid_Shoulder_Motor_joint
+      - Right_Lower_Shoulder_Motor_Joint

@@ -1,0 +1,270 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="Humanoid_trial_v1">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="Head">
+        <chain base_link="base_link" tip_link="Head_Vertical_Link" />
+    </group>
+    <group name="Left_Leg">
+        <chain base_link="base_link" tip_link="Left_Foot_Link" />
+    </group>
+    <group name="Left_Shoulder">
+        <chain base_link="base_link" tip_link="Left_Lower_Shoulder_Motor_Link" />
+    </group>
+    <group name="Right_Leg">
+        <chain base_link="base_link" tip_link="Right_Foot_Link" />
+    </group>
+    <group name="Right_Shoulder">
+        <chain base_link="base_link" tip_link="Right_Lower_Shoulder_Motor_Link" />
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="1.Heel strike(initial_contact)" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0" />
+        <joint name="Right_Hip_Joint" value="0.349" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0" />
+    </group_state>
+    <group_state name="2.Preswing(Toe off)" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0.349066" />
+        <joint name="Left_Hip_Joint" value="-0.3489" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0.5235" />
+    </group_state>
+    <group_state name="3.Loading_Response(Foot_flat)" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0.0872" />
+        <joint name="Right_Hip_Joint" value="0.2617" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0.2617" />
+    </group_state>
+    <group_state name="4.Early_Swing" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0.1744" />
+        <joint name="Left_Hip_Joint" value="0.349" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="1.0471" />
+    </group_state>
+    <group_state name="5.midstance(Single-leg)" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0.0872" />
+        <joint name="Right_Hip_Joint" value="0" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0.0872" />
+    </group_state>
+    <group_state name="6.mid_swing" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0" />
+        <joint name="Left_Hip_Joint" value="0.5235" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0.5235" />
+    </group_state>
+    <group_state name="7.Terminal_stance(heel_off)" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0" />
+        <joint name="Right_Hip_Joint" value="-0.2617" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0" />
+    </group_state>
+    <group_state name="8.Late_swing" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0" />
+        <joint name="Left_Hip_Joint" value="0.5235" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0" />
+    </group_state>
+    <group_state name="9.Pre_Swing(Toe_OFF)" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0.349" />
+        <joint name="Right_Hip_Joint" value="-0.2617" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0.5235" />
+    </group_state>
+    <group_state name="10.heel_strike(initial_contact)" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0" />
+        <joint name="Left_Hip_Joint" value="0.349" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0" />
+    </group_state>
+    <group_state name="11.Initial_swing(Early_swing)" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0.1744" />
+        <joint name="Right_Hip_Joint" value="0.349" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="1.0471" />
+    </group_state>
+    <group_state name="12.Loading_Response(Foot_Flat)" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0.0872" />
+        <joint name="Left_Hip_Joint" value="0.2617" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0.2617" />
+    </group_state>
+    <group_state name="13.Mid_Swing" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0" />
+        <joint name="Right_Hip_Joint" value="0.5235" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0.5235" />
+    </group_state>
+    <group_state name="14.Mid_Stance(Single_Leg)" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0.0872" />
+        <joint name="Left_Hip_Joint" value="0" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0.0872" />
+    </group_state>
+    <group_state name="15.Late_Swing" group="Right_Leg">
+        <joint name="Right_Calf_Joint" value="0" />
+        <joint name="Right_Hip_Joint" value="-0.5235" />
+        <joint name="Right_Rot_Hip_Link" value="0" />
+        <joint name="Right_Thigh_Joint" value="0" />
+    </group_state>
+    <group_state name="16.Terminal_Stance(Heel_Off)" group="Left_Leg">
+        <joint name="Left_Calf_Joint" value="0" />
+        <joint name="Left_Hip_Joint" value="0.2617" />
+        <joint name="Left_Rot_Hip_Link" value="0" />
+        <joint name="Left_Thigh_Joint" value="0" />
+    </group_state>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Head_Horizontal_Link" reason="Adjacent" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Head_Vertical_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Head_Vertical_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Left_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Left_Mid_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Left_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Left_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Right_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Joint" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Head_Vertical_Joint" reason="Adjacent" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Left_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Left_Mid_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Left_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Left_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Right_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Head_Horizontal_Link" link2="base_link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Head_Vertical_Link" reason="Adjacent" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Left_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Left_Mid_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Left_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Left_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Right_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Joint" link2="base_link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Left_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Left_Mid_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Left_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Left_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Right_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Head_Vertical_Link" link2="base_link" reason="Never" />
+    <disable_collisions link1="Left_Calf_Joint" link2="Left_Calf_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Calf_Joint" link2="Left_Foot_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Calf_Joint" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Left_Calf_Link" link2="Left_Thigh_Joint" reason="Adjacent" />
+    <disable_collisions link1="Left_Calf_Link" link2="Left_Thigh_Link" reason="Default" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Left_Mid_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Left_Rot_Hip_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Left_Thigh_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Right_Lower_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Right_Mid_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Hip_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Left_Lower_Shoulder_Motor_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Left_Mid_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Left_Mid_Shoulder_Motor_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Lower_Shoulder_Motor_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Left_Mid_Shoulder_Motor_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Left_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Left_Upper_Shoulder_Motor_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Lower_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Mid_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Link" link2="Left_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Link" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Link" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Mid_Shoulder_Motor_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Left_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Right_Lower_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Right_Mid_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Rot_Hip_Link" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="Left_Thigh_Joint" link2="Left_Thigh_Link" reason="Adjacent" />
+    <disable_collisions link1="Left_Thigh_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Thigh_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Thigh_Link" link2="Left_Upper_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Thigh_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Thigh_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Hip_Joint" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Lower_Shoulder_Motor_Joint" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Mid_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Thigh_Link" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Left_Upper_Shoulder_Motor_Link" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="Right_Calf_Joint" link2="Right_Calf_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Calf_Joint" link2="Right_Foot_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Calf_Joint" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Right_Calf_Link" link2="Right_Thigh_Joint" reason="Adjacent" />
+    <disable_collisions link1="Right_Calf_Link" link2="Right_Thigh_Link" reason="Default" />
+    <disable_collisions link1="Right_Hip_Joint" link2="Right_Mid_Shoulder_Motor_Link" reason="Never" />
+    <disable_collisions link1="Right_Hip_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Right_Hip_Joint" link2="Right_Rot_Hip_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Hip_Joint" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Right_Hip_Joint" link2="Right_Thigh_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Hip_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Right_Lower_Shoulder_Motor_Joint" link2="Right_Lower_Shoulder_Motor_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Lower_Shoulder_Motor_Joint" link2="Right_Mid_Shoulder_Motor_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Lower_Shoulder_Motor_Joint" link2="Right_Mid_Shoulder_Motor_joint" reason="Never" />
+    <disable_collisions link1="Right_Lower_Shoulder_Motor_Joint" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Right_Mid_Shoulder_Motor_Link" link2="Right_Mid_Shoulder_Motor_joint" reason="Adjacent" />
+    <disable_collisions link1="Right_Mid_Shoulder_Motor_Link" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Right_Mid_Shoulder_Motor_joint" link2="Right_Rot_Hip_Link" reason="Never" />
+    <disable_collisions link1="Right_Mid_Shoulder_Motor_joint" link2="Right_Upper_Shoulder_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Rot_Hip_Link" link2="Right_Thigh_Joint" reason="Never" />
+    <disable_collisions link1="Right_Rot_Hip_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Right_Rot_Hip_Link" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="Right_Thigh_Joint" link2="Right_Thigh_Link" reason="Adjacent" />
+    <disable_collisions link1="Right_Thigh_Link" link2="Right_Upper_Shoulder_Link" reason="Never" />
+    <disable_collisions link1="Right_Upper_Shoulder_Link" link2="base_link" reason="Adjacent" />
+</robot>
