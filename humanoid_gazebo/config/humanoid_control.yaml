@@ -1,0 +1,94 @@
+humanoid:
+# Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 100
+  
+  # Position Controllers ---------------------------------------
+  
+# Right Leg -----
+  Right_Hip_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Hip_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Right_Thigh_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Thigh_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Right_Calf_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Calf_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Right_Foot_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Foot_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+# Left Leg -----
+
+  Left_Hip_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_Hip_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Left_Thigh_joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_Thigh_joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Left_Calf_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_Calf_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Left_foot_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_foot_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+# Head -----
+
+  Head_Horizontal_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Head_Horizontal_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Head_Vertical_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Head_Vertical_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+# Left Arm -----
+  Left_Upper_Shoulder_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_Upper_Shoulder_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Left_Mid_Shoulder_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_Mid_Shoulder_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Left_Lower_Shoulder_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_Lower_Shoulder_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+# Right Arm -----
+  Right_Upper_Shoulder_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Upper_Shoulder_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Right_Mid_Shoulder_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Mid_Shoulder_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
+
+  Right_Lower_Shoulder_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Lower_Shoulder_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}

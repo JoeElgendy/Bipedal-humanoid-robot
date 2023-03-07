@@ -1,0 +1,25 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find humanoid_gazebo)/config/humanoid_control.yaml" command="load" />
+
+<!--  <param name="robot_description" command="cat $(find humanoid_descripition)/urdf/humanoid.urdf"/> -->
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="--namespace=/humanoid 
+	joint_state_controller 
+	Right_Hip_Joint_position Right_Thigh_Joint_position Right_Calf_Joint_position 	Right_Foot_Joint_position 
+	Left_Hip_Joint_position Left_Thigh_joint_position Left_Calf_Joint_position Left_foot_Joint_position
+   	Head_Horizontal_Joint_position Head_Vertical_Joint_position 
+    	Left_Upper_Shoulder_Joint_position Left_Mid_Shoulder_Joint_position Left_Lower_Shoulder_Joint_position
+    	Right_Upper_Shoulder_Joint_position Right_Mid_Shoulder_Joint_position Right_Lower_Shoulder_Joint_position" >
+  </node>
+  <!-- convert joint states to TF transforms for rviz, etc -->
+
+<!--  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/humanoid/joint_states" />
+  </node> -->
+
+</launch>
