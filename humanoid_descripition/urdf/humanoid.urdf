@@ -583,7 +583,7 @@
     <origin xyz="0 0.026 -0.025" rpy="0 0 0" />
     <parent link="Right_Hip_Link" />
     <child link="Right_Thigh_Link" />
-    <axis xyz="0 0 0" />
+    <axis xyz="0 1 0" />
     <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
   </joint>
 
@@ -730,7 +730,7 @@
     <origin xyz="0.045 -0.0576361191366066 0.323180000000002" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Left_Hip_Link" />
-    <axis xyz="0 1 0" />
+    <axis xyz="0 0 1" />
     <limit lower="-3.14" upper="3.14" effort="8.4" velocity="4.712" />
   </joint>
 
@@ -827,7 +827,7 @@
     <origin xyz="0.00190000000000006 -0.00199999999999997 -0.12045" rpy="0 0 0" />
     <parent link="Left_Thigh_Link" />
     <child link="Left_Calf_Link" />
-    <axis xyz="0 0 0" />
+    <axis xyz="0 1 0" />
     <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
   </joint>
 
