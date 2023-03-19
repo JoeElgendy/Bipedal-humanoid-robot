@@ -72,12 +72,12 @@
               <size>100 100</size>
             </plane>
           </geometry>
-         <!-- <material>
+          <material>
             <script>
               <uri>file://media/materials/scripts/gazebo.material</uri>
               <name>Gazebo/Grey</name>
             </script>
-          </material> -->
+          </material> 
         </visual>
         <velocity_decay>
           <linear>0</linear>
