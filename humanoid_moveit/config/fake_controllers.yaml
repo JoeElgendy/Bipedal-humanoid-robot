@@ -1,0 +1,37 @@
+controller_list:
+  - name: fake_Right_Leg_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - Right_Hip_Joint
+      - Right_Thigh_Joint
+      - Right_Calf_Joint
+      - Right_Foot_Joint
+  - name: fake_Left_Leg_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - Left_Hip_Joint
+      - Left_Thigh_joint
+      - Left_Calf_Joint
+      - Left_foot_Joint
+  - name: fake_Right_Hand_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - Right_Upper_Shoulder_Joint
+      - Right_Mid_Shoulder_Joint
+      - Right_Lower_Shoulder_Joint
+  - name: fake_Left_Hand_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - Left_Upper_Shoulder_Joint
+      - Left_Mid_Shoulder_Joint
+      - Left_Lower_Shoulder_Joint
+  - name: fake_Head_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - Head_Horizontal_Joint
+      - Head_Vertical_Joint
+initial:  # Define initial robot poses.
+  - group: Right_Leg
+    pose: 1.Heel_strike(initial_contact)
+  - group: Left_Leg
+    pose: 2.Preswing(Toe off)

@@ -1,0 +1,84 @@
+# joint_limits.yaml allows the dynamics properties specified in the URDF to be overwritten or augmented as needed
+# Specific joint properties can be changed with the keys [max_position, min_position, max_velocity, max_acceleration]
+# Joint limits can be turned off with [has_velocity_limits, has_acceleration_limits]
+joint_limits:
+  Head_Horizontal_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.159
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Head_Vertical_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.159
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_Calf_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_Hip_Joint:
+    has_velocity_limits: true
+    max_velocity: 4.712
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_Lower_Shoulder_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_Mid_Shoulder_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_Thigh_joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_Upper_Shoulder_Joint:
+    has_velocity_limits: true
+    max_velocity: 4.712
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Left_foot_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Calf_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Foot_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Hip_Joint:
+    has_velocity_limits: true
+    max_velocity: 4.712
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Lower_Shoulder_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Mid_Shoulder_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Thigh_Joint:
+    has_velocity_limits: true
+    max_velocity: 6.59
+    has_acceleration_limits: false
+    max_acceleration: 0
+  Right_Upper_Shoulder_Joint:
+    has_velocity_limits: true
+    max_velocity: 4.712
+    has_acceleration_limits: false
+    max_acceleration: 0
