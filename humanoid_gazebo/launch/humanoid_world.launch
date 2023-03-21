@@ -30,5 +30,6 @@
   <group if ="$(arg humanoid_control)">
     <include file="$(find humanoid_gazebo)/launch/humanoid_control.launch" />
   </group>
-  <!-- <node name="uthai_walker" pkg="uthai_gazebo" type="walker.py" /> -->
+
+  <node name="q_set_control_node" pkg="humanoid_gazebo" type="walking_without_csv.py" /> 
 </launch>
