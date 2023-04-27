@@ -33,8 +33,8 @@ include_directories(
 )
 
 
-add_executable(Humanoid_kinematics src/Humanoid_kinematics.cpp )
-target_link_libraries(Humanoid_kinematics ${catkin_LIBRARIES})
+add_executable(humanoid_kinematics src/humanoid_kinematics.cpp )
+target_link_libraries(humanoid_kinematics ${catkin_LIBRARIES})
 
 
 

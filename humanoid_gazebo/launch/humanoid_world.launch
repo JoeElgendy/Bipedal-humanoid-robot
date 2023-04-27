@@ -31,5 +31,5 @@
     <include file="$(find humanoid_gazebo)/launch/humanoid_control.launch" />
   </group>
 
-  <node name="q_set_control_node" pkg="humanoid_gazebo" type="walking_without_csv.py" /> 
+<!--  <node name="q_set_control_node" pkg="humanoid_gazebo" type="walking_without_csv.py" /> -->
 </launch>
