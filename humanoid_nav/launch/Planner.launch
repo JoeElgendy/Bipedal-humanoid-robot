@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="map_file" default="$(find humanoid_nav)/src//map/room.yaml"/>
+
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find humanoid_nav)/src/humanoid_nav_setup.rviz"/>
+
+  <node name="footstep_planner" pkg="humanoid_nav" type="Foot_step_planner_Joe.py" args="$(find humanoid_nav)/src/footstep_cost.ods"/>
+</launch>
