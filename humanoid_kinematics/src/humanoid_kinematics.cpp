@@ -994,7 +994,7 @@ int main(int argc, char **argv){
     std::string urdf_file;
     nh.getParam("urdf_file", urdf_file);
     // el function el gya 7tdrb error 34n m3nda4 7ga esmha base link
-    humanoid_kd humanoid(&nh,urdf_file,"base_link","r_foot","l_foot");
+    humanoid_kd humanoid(&nh,urdf_file,"base_link","Right_Foot_Link","Left_foot_Link");
     KDL::ChainFkSolverPos_recursive r_fksolver(humanoid.r_leg);
     KDL::ChainFkSolverPos_recursive l_fksolver(humanoid.l_leg);
     nav_msgs::Path ptest;
