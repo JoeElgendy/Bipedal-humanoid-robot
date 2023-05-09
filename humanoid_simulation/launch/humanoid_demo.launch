@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <launch>
- <!-- <include file="$(find humanoid_nav)/launch/Planner.launch"/> -->
+  <include file="$(find humanoid_nav)/launch/Planner.launch"/> 
   <include file="$(find humanoid_gazebo)/launch/humanoid_world.launch" />
   <param name="urdf_file" value="$(find humanoid_descripition)/urdf/humanoid.urdf"/>
   <node name="humanoid_kinematics" pkg="humanoid_kinematics" type="humanoid_kinematics" output="screen" />

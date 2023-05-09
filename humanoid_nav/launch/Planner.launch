@@ -6,5 +6,5 @@
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find humanoid_nav)/src/humanoid_nav_setup.rviz"/>
 
-  <node name="footstep_planner" pkg="humanoid_nav" type="Foot_step_planner_Joe.py" args="$(find humanoid_nav)/src/footstep_cost.ods"/>
+  <node name="footstep_planner" pkg="humanoid_nav" type="Foot_step_planner_Joe.py" args="$(find humanoid_nav)/src/final_cost.ods"/>
 </launch>

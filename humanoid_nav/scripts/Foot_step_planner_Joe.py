@@ -24,11 +24,10 @@ from pyexcel_ods import get_data
 
 ROBOT_SIZE = 4
 FOOT_SIZE = 2
-THETA_LIST = [0, 10, -10]
+THETA_LIST = []
 COM_2_FOOT = [0,0]
 HUMANOID_between = 0.18
 SCALE_REAL = 1.0
-SCALE_MAP = 1.0
 A_PRECISION = 100
 
 # Position on grid parameters are (x,y,theta,s)
@@ -42,17 +41,18 @@ parser.add_argument('string', metavar='N', type=str, nargs='+',
 args = parser.parse_args().string
 
 def get_footcost_from_excel():
-    global SCALE_REAL,HUMANOID_between
+    global SCALE_REAL,HUMANOID_between,THETA_LIST
     # data = get_data("src/Foot_right_cost_test2.ods").popitem()[1] 
     data = get_data(args[0]).popitem()[1]
     robot_row = data.pop(0)[0] # the first row which represent right foot
     row = data.pop(0)[0] # the second row which represent left foot
     normal_line = data.pop(0)[0] # the third row which represent the CoM relative to the foot
-    COM_2_FOOT[0] = row/2 #the position of the center of the foot
-    SCALE_REAL = HUMANOID_between/row # the scale of the footstep cost which is a ratio between the distance between robot feet and length of second row of data
+    COM_2_FOOT[0] = normal_line-1 #the position of the center of the foot
+    SCALE_REAL = HUMANOID_between/(normal_line-1) # the scale of the footstep cost which is a ratio between the distance between robot feet and length of second row of data
     w_param = data.pop(0) # the fourth row which represent the weight of the footstep cost
     degree = data.pop(0) # the fifth row which represent the degree of the footstep cost
     # initialiaze four empty dictionaries to store the cost of moving the robot's feet and the cost of moving in different directions
+    THETA_LIST += degree
     COST_FOOT_R = {}
     COST_FOOT_L = {}
     THETA_COST_FOOT_R = {}
@@ -273,7 +273,7 @@ class rviz_footprint:
     """ genarate marker to visualize footstep path """
 # the constructor takes a list of footsteps which represent the sequnce from start to goal
     def __init__(self, footsteps):
-        print("Scale_map = ",SCALE_MAP)
+
         self.FOOT_VECTOR3 = Vector3(0.04,0.08,0.2) # Constant value representing the dimensions of footstep marker
         self.TEXT_VECTOR3 = Vector3(0.1,0.1,0.1) # Constant value representing the dimensions of text marker
         self.rviz_footsteps_pub = rospy.Publisher('/footprint', MarkerArray, queue_size=10) # Publisher for footstep marker
@@ -301,8 +301,8 @@ class rviz_footprint:
             else:
                 self.foot.color = ColorRGBA(1, 0, 0, 0.5)
             self.foot.pose = footsteps[n].pose
-            self.foot.pose.position.x = footsteps[n].pose.position.x*SCALE_MAP
-            self.foot.pose.position.y = footsteps[n].pose.position.y*SCALE_MAP
+            self.foot.pose.position.x = footsteps[n].pose.position.x
+            self.foot.pose.position.y = footsteps[n].pose.position.y
             # print(self.foot.pose.position.x,self.foot.pose.position.y)
             self.foot.id = n
             self.foots.append(copy.deepcopy(self.foot))
@@ -542,7 +542,7 @@ def rviz_map_search(g, scale, delay=0.07, viapoint=True):
     def sensor_passable(id):
         return g.collision(id) and g.passable(id)
 
-    frame = Frame(root, width=200, height=200)
+    frame = Frame(root, width=200, height=200) #dont know frame !!!!
     frame.bind("<Key>", key)
     frame.bind("<Button-1>", callback)
     frame.pack()
@@ -785,14 +785,14 @@ class nav_spin_footstep_planning:
         theta = euler_from_quaternion([data.pose.pose.orientation.x,data.pose.pose.orientation.y,
                                        data.pose.pose.orientation.z,data.pose.pose.orientation.w,])
         theta = int(round(rad2deg(theta[2]+3*pi/2)/10)*10)%360
-        self.new_start = (int(round(data.pose.pose.position.x/SCALE_MAP)),int(round(data.pose.pose.position.y/SCALE_MAP)),theta)
+        self.new_start = (int(round(data.pose.pose.position.x)),int(round(data.pose.pose.position.y)),theta)
         print('self.new_start = ',self.new_start)
 
     def __goal(self,data):
         theta = euler_from_quaternion([data.pose.orientation.x,data.pose.orientation.y,
                                        data.pose.orientation.z,data.pose.orientation.w])
         theta = int(round(rad2deg(theta[2]+3*pi/2)/10)*10)%360
-        self.new_goal = (int(round(data.pose.position.x/SCALE_MAP)),int(round(data.pose.position.y/SCALE_MAP)),theta)
+        self.new_goal = (int(round(data.pose.position.x)),int(round(data.pose.position.y)),theta)
         print('self.new_goal = ',self.new_goal)
         if self.new_goal != self.old_goal :
             self.__searching(self.new_start,self.new_goal)
@@ -807,7 +807,6 @@ if __name__ == '__main__':
     print('footstep_planner start !')
     call_map = rospy.ServiceProxy('static_map', GetMap) #execute GetMap service
     MAP = call_map() #store the map in MAP
-    SCALE_MAP = MAP.map.info.resolution # extraxxt the resolution of the map
     g = FootstepGrid(MAP) #create an instance of the FootstepGrid class
 
 

@@ -47,6 +47,29 @@
     </plugin>
   </gazebo>
 
+<!-- IMU -->
+  <gazebo reference="IMU_Link">
+    <gravity>true</gravity>
+    <material>Gazebo/Green</material>
+    <sensor name="IMU_Link" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>/humanoid/sensor/imu</topic>
+
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>humanoid/sensor/imu</topicName>
+        <bodyName>IMU_Link</bodyName>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>IMU_Link</frameName>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
   <!-- World -->
   <gazebo reference="world"/>
   <!-- Map -->
@@ -184,7 +207,32 @@
     <material>Gazebo/Grey</material>
     <selfCollide>false</selfCollide>
   </gazebo>
-
+<!-- Camera -->
+   <gazebo reference="Lens_Link">
+    <material>Gazebo/red</material>
+    <sensor name="Camera" type="camera">
+      <pose> 0 0 0 0 0 0   </pose>
+      <visualize>true</visualize>
+      <update_rate>100</update_rate>
+      <camera>
+        <horizontal_fov>1.089</horizontal_fov>
+       <image>
+          <format>R8G8B8</format>
+          <width>640</width>
+          <height>480</height>
+        </image> 
+        <clip>
+          <near>0.05</near>
+          <far>8.0</far>
+        </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <frame_name>Lens_Link</frame_name>
+	<topicName>humanoid/sensor/camera</topicName>
+        <updateRateHZ>10.0</updateRateHZ>
+      </plugin>
+    </sensor>
+  </gazebo>  
 
 <!-- Base link -->
   <link
@@ -995,21 +1043,86 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <link
-    name="camera_link">
+<!-- Camera joint -->
+    <joint name="Camera_Joint" type="fixed">
+      <parent link="Head_Vertical_Link"/>
+      <child link="Camera_Link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint> 
+<!-- Camera link -->
+
+  <link name="Camera_Link">
     <inertial>
       <origin
-        xyz="0.00231726689772121 0.0817655312935915 -0.146049012146872"
+        xyz="-0.02964 0.054262 0.14599"
+        rpy="0 0 0" />
+      <axis
+        xyz="0 0 0" />
+      <mass value="0" />
+      <inertia
+        ixx="1.23288476738391E-05"
+        ixy="1.61107638845834E-07"
+        ixz="7.16221856208835E-07"
+        iyy="1.33519522742047E-05"
+        iyz="-1.33901765257804E-07"
+        izz="3.28226792350189E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+      <mesh filename="package://humanoid_descripition/meshes/Camera.STL" />
+     </geometry>
+     <material name="blue"/>
+    </visual>
+  </link> 
+  <!--Lens_Link-->
+  <link
+    name="Lens_Link">
+    <inertial>
+      <origin
+        xyz="0.0296402873307111 0.0542620041023058 -0.145993241395755"
         rpy="0 0 0" />
       <mass
         value="0" />
+     <inertia
+        ixx="1.23288476738391E-05"
+        ixy="1.61107638845834E-07"
+        ixz="7.16221856208835E-07"
+        iyy="1.33519522742047E-05"
+        iyz="-1.33901765257804E-07"
+        izz="3.28226792350189E-06" />
+    </inertial>
+   
+  </link>
+   <!--Lens_Joint--> 
+  <joint
+    name="Lens_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0249627342624163 0.0274630025807885 0.000388603128653991"
+      rpy="-3.14159265358979 -0.0155915295359344 -3.14010933670462" />
+    <parent
+      link="Head_Vertical_Link" />
+    <child
+      link="Lens_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint> 
+<link
+    name="IMU_Link">
+    <inertial>
+      <origin
+        xyz="0.010731 -0.00061872 -0.27685"
+        rpy="0 0 0" />
+      <mass
+        value="0.000704900526624758" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="3.83469081842287E-08"
+        ixy="-1.03709665858922E-09"
+        ixz="-2.11183830250688E-10"
+        iyy="1.37853263734955E-08"
+        iyz="-1.61145026935895E-11"
+        izz="5.18252315581656E-08" />
     </inertial>
     <visual>
       <origin
@@ -1017,24 +1130,35 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://humanoid_descripition/meshes/Camera.STL" />
+          filename="package://humanoid_descripition/meshes/IMU.STL" />
       </geometry>
       <material
-        name="red">
+        name="blue">
+        <color
+          rgba="0.666666666666667 0.698039215686274 0.768627450980392 1" />
       </material>
     </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://humanoid_descripition/meshes/IMU.STL" />
+      </geometry>
+    </collision>
   </link>
   <joint
-    name="Camera"
+    name="IMU_Joint"
     type="fixed">
     <origin
-      xyz="0 0 0"
+      xyz="0.00022338 0.00015602 0.0"
       rpy="0 0 0" />
     <parent
-      link="Head_Vertical_Link" />
+      link="Head_Horizontal_Link" />
     <child
-      link="Camera_link" />
+      link="IMU_Link" />
     <axis
       xyz="0 0 0" />
   </joint>
-</robot>
+</robot> 
