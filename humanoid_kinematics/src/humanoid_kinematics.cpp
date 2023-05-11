@@ -28,6 +28,7 @@
 #include <kdl/chainiksolvervel_pinv.hpp>
 #include <ctime>
 
+using namespace KDL;
 // Hany :  find these values -->
 #define foot_x_size 0.03
 #define foot_x_size2 -0.04
@@ -255,23 +256,37 @@ public:
         else
         {
             std::cout << "Success to construct kdl tree\n";
+            //std::cout<< humanoid_tree.getSegments(); //Trying to get the name of segments LAST EDIT
+            //std::map<std::string,TreeElement>::const_iterator root=humanoid_tree.getRootSegment();
         }
 
-        //Arm Chain
-        if(!humanoid_tree.getChain(r_endh,l_endh,r_arm)){
-            std::cout << "Failed to get r_arm kinematics chain\n";
+        std::string root_link= humanoid_tree.getRootSegment()->first;
+        std::vector<Chain> humanoid_chains;
+
+        KDL::Chain Right_Arm_Chain, Left_Arm_Chain, Right_Leg_Chain, Left_Leg_Chain;
+        //Right Arm Chain
+        if(!humanoid_tree.getChain(root_link,r_endh,Right_Arm_Chain)){
+           std::cout << "Failed to get r_arm kinematics chain\n";
         }
-        if(!humanoid_tree.getChain(r_endh,l_endh,l_arm)){
+
+        else{
+            humanoid_chains.push_back(Right_Arm_Chain);
+        }
+
+        if(!humanoid_tree.getChain(root_link,l_endh,Left_Arm_Chain)){
              std::cout << "Failed to get l_arm kinematics chain\n";
         }
         else
         {
-            std::cout << "Success to get kinematics chain\n";
-            r_arm_jntarray=KDL::JntArray(r_arm.getNrOfJoints());
-            l_arm_jntarray=KDL::JntArray(l_arm.getNrOfJoints());
+            humanoid_chains.push_back(Left_Arm_Chain);
+            std::cout << "Success to get kinematics chain of arm \n";
+            r_arm_jntarray=KDL::JntArray(Right_Arm_Chain.getNrOfJoints());
+            l_arm_jntarray=KDL::JntArray(Left_Arm_Chain.getNrOfJoints());
+            std::cout << Right_Arm_Chain.getNrOfJoints();
+            std::cout << Right_Arm_Chain.getNrOfSegments();
         }
         //Leg Chain
-        if (!humanoid_tree.getChain(r_endf, l_endf, r_leg))
+        if (!humanoid_tree.getChain(root_link, r_endf, Right_Leg_Chain))
         {
             /*
              * This function gets the chain from the tree. A chain is a subset of a tree. The chain is specified by the base link
@@ -280,17 +295,21 @@ public:
              */
             std::cout << "Failed to get r_leg kinematics chain\n";
         }
-        if (!humanoid_tree.getChain(l_endf, r_endf, l_leg))
+        else{
+            humanoid_chains.push_back(Right_Leg_Chain);
+        }
+        if (!humanoid_tree.getChain(root_link, l_endf, Left_Leg_Chain))
         {
             std::cout << "Failed to get l_leg kinematics chain\n";
         }
         else
         {
-            std::cout << "Success to get kinematics chain\n";
-            r_leg_jntarray = KDL::JntArray(r_leg.getNrOfJoints()); //(r_leg.getNrOfJoints()):
+            humanoid_chains.push_back(Left_Leg_Chain);
+            std::cout << "Success to get kinematics chain of leg\n";
+            r_leg_jntarray = KDL::JntArray(Right_Leg_Chain.getNrOfJoints()); //(r_leg.getNrOfJoints()):
                                                                // This function gets the number of joints of the right leg chain and then creates a joint array with the same number of joints.
                                                                // The joint array is used to store the joint positions of the right leg.
-            l_leg_jntarray = KDL::JntArray(l_leg.getNrOfJoints());
+            l_leg_jntarray = KDL::JntArray(Left_Leg_Chain.getNrOfJoints());
         }
 
         // publishers
@@ -1358,7 +1377,7 @@ int main(int argc, char **argv)
     std::string urdf_file;
     nh.getParam("urdf_file", urdf_file);
     // el function el gya 7tdrb error 34n m3nda4 7ga esmha base link
-    humanoid_kd humanoid(&nh, urdf_file, "base_link", "Right_Foot_Link", "Left_foot_Link","Right_Lower_Shoulder_Link","Left_Lower_Shoulder_Link");
+    humanoid_kd humanoid(&nh, urdf_file, "base_footprint", "Right_Foot_Link", "Left_foot_Link","Right_Lower_Shoulder_link","Left_Lower_Shoulder_Link");
     KDL::ChainFkSolverPos_recursive r_leg_fk_solver(humanoid.r_leg);
     KDL::ChainFkSolverPos_recursive l_leg_fk_solver(humanoid.l_leg);
     KDL::ChainFkSolverPos_recursive r_arm_fk_solver(humanoid.r_arm);

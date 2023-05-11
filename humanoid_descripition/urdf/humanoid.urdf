@@ -234,13 +234,16 @@
     </sensor>
   </gazebo>  
 
-<!--t7nyka-->
-  <link name="base_footprint"/>
-  <joint name="base_fixed" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
+<!-- Dummy Link -->
+  <link name="dummy">
+    </link>
+
+<!-- Dummy Joint -->
+  <joint name ="dummy_joint" type="fixed">
+	<parent link="dummy" />
+	<child link="base_link" />
   </joint>
+
 <!-- Base link -->
   <link
     name="base_link">
@@ -367,7 +370,7 @@
   </transmission>
 
 <!-- Left Lower Shoulder Link -->
-  <link name="Left_Lower_Shoulder Link">
+  <link name="Left_Lower_Shoulder_Link">
     <inertial>
       <origin xyz="0.0250664390388209 -0.00638333415263484 -0.0372443138205451" rpy="0 0 0" />
       <mass value="0.116130359952787" />
@@ -398,7 +401,7 @@
   <joint name="Left_Lower_Shoulder_Joint" type="revolute">
     <origin xyz="0.00230000000000036 0 -0.111599999999999" rpy="0 0 0" />
     <parent link="Left_Mid_Shoulder_Link" />
-    <child link="Left_Lower_Shoulder Link" />
+    <child link="Left_Lower_Shoulder_Link" />
     <axis xyz="1 0 0" />
     <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
   </joint>
