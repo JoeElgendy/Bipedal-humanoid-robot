@@ -68,11 +68,9 @@ class humanoid_kd
         pb_Right_Upper_Shoulder_Link,
         pb_Right_Mid_Shoulder_Link,
         pb_Right_Lower_Shoulder_Link,
-        pb_Right_Hand_Link,
         pb_Left_Upper_Shoulder_Link,
         pb_Left_Mid_Shoulder_Link,
         pb_Left_Lower_Shoulder_Link,
-        pb_Left_Hand_Link,
         pb_chest,
         pb_com,
         pb_centroid,
@@ -84,7 +82,7 @@ class humanoid_kd
 
     trajectory_msgs::JointTrajectoryPoint traj_point;
     // Pointstamped: This represents a Point with reference coordinate frame and timestamp
-    geometry_msgs::PointStamped ps, ps_centroid, ps_Left_Foot, ps_Right_Foot, ps_Right_Hand, ps_Left_Hand;
+    geometry_msgs::PointStamped ps, ps_centroid, ps_Left_Foot, ps_Right_Foot, ps_Right_Lower_Shoulder, ps_Left_Lower_Shoulder;
     // initializing humanoid tree we right joint array we left joint array
     KDL::Tree humanoid_tree;
     KDL::JntArray Right_Leg_jntarray;
@@ -205,19 +203,19 @@ public:
          real = 0;
     // ana fo2 3araft tree we joint array ! dlwa2ty ba3araf chain we frame
     KDL::Chain Right_Leg, Left_Leg, Right_Arm,Left_Arm;
-    KDL::Frame Right_Foot, Left_Foot,Right_Hand,Left_Hand;
+    KDL::Frame Right_Foot, Left_Foot,Right_Lower_Shoulder,Left_Lower_Shoulder;
     // Right Upper Arm
-    double Right_Upper_Shoulder_Link,Right_Mid_Shoulder_Link,Right_Lower_Shoulder_Link,Right_Hand_Link;
+    double Right_Upper_Shoulder_Link,Right_Mid_Shoulder_Link,Right_Lower_Shoulder_Link;
     // Left Upper Arm
-    double Left_Upper_Shoulder_Link,Left_Mid_Shoulder_Link,Left_Lower_Shoulder_Link,Left_Hand_Link;
+    double Left_Upper_Shoulder_Link,Left_Mid_Shoulder_Link,Left_Lower_Shoulder_Link;
     // Right Leg
     double Right_Hip_Link, Right_Thigh_Link, Right_Calf_Link, Right_Foot_Link;
     // Left Leg
     double Left_Hip_Link, Left_Thigh_Link, Left_Calf_Link, Left_Foot_Link;
     // Transformation of Right upper Arm
-    double T_Right_Upper_Shoulder_Link, T_Right_Mid_Shoulder_Link, T_Right_Lower_Shoulder_Link,T_Right_Hand_Link;
+    double T_Right_Upper_Shoulder_Link, T_Right_Mid_Shoulder_Link, T_Right_Lower_Shoulder_Link;
     // Transformation of Left Upper Arm
-    double T_Left_Upper_Shoulder_Link,  T_Left_Mid_Shoulder_Link,  T_Left_Lower_Shoulder_Link,T_Left_Hand_Link;
+    double T_Left_Upper_Shoulder_Link,  T_Left_Mid_Shoulder_Link,  T_Left_Lower_Shoulder_Link;
     // Transformation of Right Legn
     double T_Right_Hip_Link, T_Right_Thigh_Link, T_Right_Calf_Link,T_Right_Foot_Link;
     // Transformation of Left Leg
@@ -227,7 +225,7 @@ public:
     // 1.rosnode handle, 2.file path llurdf file, 3. esm elbase link fl urdf, 4. esm e end effectors elly fl urdf
     // ba3dein bat2aked en elcode 3aref y integrate m3 el urdf file
 
-    humanoid_kd(ros::NodeHandle *n, std::string urdf, std::string base, std::string r_endf, std::string l_endf,std::string r_endh, std::string l_endh)
+    humanoid_kd(ros::NodeHandle *n, std::string urdf, std::string base, std::string Right_Leg_End_Effector, std::string Left_Leg_End_Effector,std::string Right_Arm_End_Effector, std::string Left_Arm_End_Effector)
     {
         /**
          * This function constructs a KDL tree and kinematics chains for a humanoid robot, sets up publishers
@@ -237,10 +235,10 @@ public:
          * @param urdf The file path to the URDF (Unified Robot Description Format) file that describes the
          * robot's kinematic and dynamic properties.
          * @param base The name of the base link of the robot in the URDF file.
-         * @param r_endf The end effector of the right leg in the kinematics chain.
-         * @param l_endf The end effector of the left leg in the kinematics chain.
-         * @param r_endh The end effector of the right arm in the kinematics chain.
-         * @param l_endh The end effector of the left arm in the kinematics chain.
+         * @param Right_Leg_End_Effector The end effector of the right leg in the kinematics chain.
+         * @param Left_Leg_End_Effector The end effector of the left leg in the kinematics chain.
+         * @param Right_Arm_End_Effector The end effector of the right arm in the kinematics chain.
+         * @param Left_Arm_End_Effector The end effector of the left arm in the kinematics chain.
          */
 
 
@@ -265,7 +263,7 @@ public:
 
         KDL::Chain Right_Arm_Chain, Left_Arm_Chain, Right_Leg_Chain, Left_Leg_Chain;
         //Right Arm Chain
-        if(!humanoid_tree.getChain(root_link,r_endh,Right_Arm_Chain)){
+        if(!humanoid_tree.getChain(root_link,Right_Arm_End_Effector,Right_Arm_Chain)){
            std::cout << "Failed to get Right_Arm kinematics chain\n";
         }
 
@@ -273,7 +271,7 @@ public:
             humanoid_chains.push_back(Right_Arm_Chain);
         }
 
-        if(!humanoid_tree.getChain(root_link,l_endh,Left_Arm_Chain)){
+        if(!humanoid_tree.getChain(root_link,Left_Arm_End_Effector,Left_Arm_Chain)){
              std::cout << "Failed to get Left_Arm kinematics chain\n";
         }
         else
@@ -282,25 +280,23 @@ public:
             std::cout << "Success to get kinematics chain of arm \n";
             Right_Arm_jntarray=KDL::JntArray(Right_Arm_Chain.getNrOfJoints());
             Left_Arm_jntarray=KDL::JntArray(Left_Arm_Chain.getNrOfJoints());
-            std::cout << Right_Arm_Chain.getNrOfJoints();
-            std::cout << Right_Arm_Chain.getNrOfSegments();
         }
         //Leg Chain
-        if (!humanoid_tree.getChain(root_link, r_endf, Right_Leg_Chain))
+        if (!humanoid_tree.getChain(root_link, Right_Leg_End_Effector, Right_Leg_Chain))
         {
             /*
              * This function gets the chain from the tree. A chain is a subset of a tree. The chain is specified by the base link
              * and the tip link. The chain is constructed by tracing the path in the tree from base to tip. The chain contains
              * all the segments and joints along this path. If no path is found, the chain is not modified and false is returned.
              */
-            std::cout << "Failed to get Right_Leg kinematics chain\n";
+            std::cout << "Failed to get Right_Leg kinematics chain \n";
         }
         else{
             humanoid_chains.push_back(Right_Leg_Chain);
         }
-        if (!humanoid_tree.getChain(root_link, l_endf, Left_Leg_Chain))
+        if (!humanoid_tree.getChain(root_link, Left_Leg_End_Effector, Left_Leg_Chain))
         {
-            std::cout << "Failed to get Left_Leg kinematics chain\n";
+            std::cout << "Failed to get Left_Leg kinematics chain \n";
         }
         else
         {
@@ -313,16 +309,16 @@ public:
         }
 
         // publishers
-        pb_Right_Upper_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Right_Upper_Shoulder_Joint_position/command",10);
-        pb_Right_Mid_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Right_Mid_Shoulder_Joint_position/command",10);
-        pb_Right_Lower_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Right_Lower_Shoulder_Joint_position/command",10);
+        pb_Right_Upper_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Right_Upper_Shoulder_Joint_position/command",10);//sa7
+        pb_Right_Mid_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Right_Mid_Shoulder_Joint_position/command",10);//sa7
+        pb_Right_Lower_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Right_Lower_Shoulder_Joint_position/command",10);//sa7
         pb_Right_Hip_Link = n->advertise<std_msgs::Float64>("/humanoid/Right_Hip_Joint_position/command", 10);
         pb_Right_Thigh_Link = n->advertise<std_msgs::Float64>("/humanoid/Right_Thigh_Joint_position/command", 10);
         pb_Right_Calf_Link = n->advertise<std_msgs::Float64>("/humanoid/Right_Calf_Joint_position/command", 10);
         pb_Right_Foot_Link = n->advertise<std_msgs::Float64>("/humanoid/Right_Foot_Joint_position/command", 10);
-        pb_Left_Upper_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Left_Upper_Shoulder_Joint_position/command",10);
-        pb_Left_Mid_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Left_Mid_Shoulder_Joint_position/command",10);
-        pb_Left_Lower_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Left_Lower_Shoulder_Joint_position/command",10);
+        pb_Left_Upper_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Left_Upper_Shoulder_Joint_position/command",10);//sa7
+        pb_Left_Mid_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Left_Mid_Shoulder_Joint_position/command",10);//sa7
+        pb_Left_Lower_Shoulder_Link=n->advertise<std_msgs::Float64>("/humanoid/Left_Lower_Shoulder_Joint_position/command",10);//sa7
         pb_Left_Hip_Link = n->advertise<std_msgs::Float64>("/humanoid/Left_Hip_Joint_position/command", 10);
         pb_Left_Thigh_Link = n->advertise<std_msgs::Float64>("/humanoid/Left_Thigh_joint_position/command", 10);
         pb_Left_Calf_Link = n->advertise<std_msgs::Float64>("/humanoid/Left_Calf_Joint_position/command", 10);
@@ -364,25 +360,21 @@ public:
         T_Right_Upper_Shoulder_Link=jnt[0];
         T_Right_Mid_Shoulder_Link=jnt[1];
         T_Right_Lower_Shoulder_Link=jnt[2];
-        T_Right_Hand_Link= jnt[3];
-       // T_Right_Hand_Link= 0 - (jnt[2] + jnt[1]); //revise
 
-        T_Right_Hip_Link = jnt[4];
-        T_Right_Thigh_Link = jnt[5];
-        T_Right_Calf_Link = jnt[6];
-        T_Right_Foot_Link = jnt[7];
+        T_Right_Hip_Link = jnt[3];
+        T_Right_Thigh_Link = jnt[4];
+        T_Right_Calf_Link = jnt[5];
+        T_Right_Foot_Link = jnt[6];
         //T_Right_Foot_Link = 0 - (jnt[5] + jnt[6]);
 
-        T_Left_Upper_Shoulder_Link=jnt[8];
-        T_Left_Mid_Shoulder_Link=jnt[9];
-        T_Left_Lower_Shoulder_Link=jnt[10];
-        T_Left_Hand_Link= jnt[11];
-        //T_Left_Hand_Link= 0 - (jnt[9] + jnt[10]);
+        T_Left_Upper_Shoulder_Link=jnt[7];
+        T_Left_Mid_Shoulder_Link=jnt[8];
+        T_Left_Lower_Shoulder_Link=jnt[9];
 
-        T_Left_Hip_Link = jnt[12];
-        T_Left_Thigh_Link = jnt[13];
-        T_Left_Calf_Link = jnt[14];
-        T_Left_Foot_Link = jnt[15];
+        T_Left_Hip_Link = jnt[10];
+        T_Left_Thigh_Link = jnt[11];
+        T_Left_Calf_Link = jnt[12];
+        T_Left_Foot_Link = jnt[13];
         //T_Left_Foot_Link = 0 - (jnt[13] + jnt[14]);
     }
 
@@ -396,7 +388,6 @@ public:
         T_Right_Upper_Shoulder_Link=Right_Upper_Shoulder_Link;
         T_Right_Mid_Shoulder_Link=Right_Mid_Shoulder_Link;
         T_Right_Lower_Shoulder_Link=Right_Lower_Shoulder_Link;
-        T_Right_Hand_Link=Right_Hand_Link;
 
         T_Right_Hip_Link = Right_Hip_Link;
         T_Right_Thigh_Link = Right_Thigh_Link;
@@ -406,7 +397,6 @@ public:
         T_Left_Upper_Shoulder_Link=Left_Upper_Shoulder_Link;
         T_Left_Mid_Shoulder_Link=Left_Mid_Shoulder_Link;
         T_Left_Lower_Shoulder_Link=Left_Lower_Shoulder_Link;
-        T_Left_Hand_Link=Left_Hand_Link;
 
         T_Left_Hip_Link = Left_Hip_Link;
         T_Left_Thigh_Link = Left_Thigh_Link;
@@ -425,25 +415,21 @@ public:
         Right_Upper_Shoulder_Link=jnt[0];
         Right_Mid_Shoulder_Link=jnt[1];
         Right_Lower_Shoulder_Link=jnt[2];
-        Right_Hand_Link= jnt[3];
-        //Right_Hand_Link= 0 - (jnt_h[2] + jnt_h[1]);
 
-        Right_Hip_Link = jnt[4];
-        Right_Thigh_Link = jnt[5];
-        Right_Calf_Link = jnt[6];
-        Right_Foot_Link = jnt[7];
+        Right_Hip_Link = jnt[3];
+        Right_Thigh_Link = jnt[4];
+        Right_Calf_Link = jnt[5];
+        Right_Foot_Link = jnt[6];
         //Right_Foot_Link = 0 - (jnt_l[2] + jnt_l[1]);
 
-        Left_Upper_Shoulder_Link=jnt[8];
-        Left_Mid_Shoulder_Link=jnt[9];
-        Left_Lower_Shoulder_Link=jnt[10];
-        Left_Hand_Link= jnt[11];
-        //Left_Hand_Link= 0 - (jnt_h[5] + jnt_h[4]);
+        Left_Upper_Shoulder_Link=jnt[7];
+        Left_Mid_Shoulder_Link=jnt[8];
+        Left_Lower_Shoulder_Link=jnt[9];
 
-        Left_Hip_Link = jnt[12];
-        Left_Thigh_Link = jnt[13];
-        Left_Calf_Link = jnt[14];
-        Left_Foot_Link = jnt[15];
+        Left_Hip_Link = jnt[10];
+        Left_Thigh_Link = jnt[11];
+        Left_Calf_Link = jnt[12];
+        Left_Foot_Link = jnt[13];
         //Left_Foot_Link = 0 - (jnt_l[4] + jnt_l[5]);
     }
 
@@ -457,25 +443,22 @@ public:
         Right_Upper_Shoulder_Link +=jnt[0];
         Right_Mid_Shoulder_Link +=jnt[1];
         Right_Lower_Shoulder_Link +=jnt[2];
-        Right_Hand_Link += jnt[3];
-        //Right_Hand_Link += 0 - (jnt[2] + jnt[1]);
 
-        Right_Hip_Link += jnt[4];
-        Right_Thigh_Link += jnt[5];
-        Right_Calf_Link += jnt[6];
-        Right_Foot_Link += jnt[7];
+        Right_Hip_Link += jnt[3];
+        Right_Thigh_Link += jnt[4];
+        Right_Calf_Link += jnt[5];
+        Right_Foot_Link += jnt[6];
         //Right_Foot_Link += 0 - (jnt[2] + jnt[1]);
 
-        Left_Upper_Shoulder_Link +=jnt[8];
-        Left_Mid_Shoulder_Link +=jnt[9];
-        Left_Lower_Shoulder_Link +=jnt[10];
-        Left_Hand_Link += jnt[11];
-        //Left_Hand_Link += 0 - (jnt[2] + jnt[1]);
+        Left_Upper_Shoulder_Link +=jnt[7];
+        Left_Mid_Shoulder_Link +=jnt[8];
+        Left_Lower_Shoulder_Link +=jnt[9];
 
-        Left_Hip_Link += jnt[12];
-        Left_Thigh_Link += jnt[13];
-        Left_Calf_Link += jnt[14];
-        Left_Foot_Link += jnt[15];
+
+        Left_Hip_Link += jnt[10];
+        Left_Thigh_Link += jnt[11];
+        Left_Calf_Link += jnt[12];
+        Left_Foot_Link += jnt[13];
         //Left_Foot_Link += 0 - (jnt[4] + jnt[5]);
     }
     // void auto_ankle(char state)
@@ -497,34 +480,31 @@ public:
         /**
          * The function sets the joint positions for a humanoid robot's left and right legs. and sets them in a single array of type jntarray
          */
-        Right_Arm_jntarray.data[11]  = Left_Hand_Link;
-        Right_Arm_jntarray.data[3]  = Right_Hand_Link;
 
-        Right_Arm_jntarray.data[8]  = Left_Upper_Shoulder_Link;
+
+        Right_Arm_jntarray.data[7]  = Left_Upper_Shoulder_Link;
         Right_Arm_jntarray.data[0]  = Right_Upper_Shoulder_Link;
 
-        Right_Arm_jntarray.data[9]  = Left_Mid_Shoulder_Link;
+        Right_Arm_jntarray.data[8]  = Left_Mid_Shoulder_Link;
         Right_Arm_jntarray.data[1]  = Right_Mid_Shoulder_Link;
 
-        Right_Arm_jntarray.data[10]  = Left_Lower_Shoulder_Link;
+        Right_Arm_jntarray.data[9]  = Left_Lower_Shoulder_Link;
         Right_Arm_jntarray.data[2]  = Right_Lower_Shoulder_Link;
 
-        Right_Leg_jntarray.data[15] = Left_Foot_Link;   // r_hip yaw
-        Right_Leg_jntarray.data[7] = Right_Foot_Link;  // r_hip rol
+        Right_Leg_jntarray.data[13] = Left_Foot_Link;   // r_hip yaw
+        Right_Leg_jntarray.data[6] = Right_Foot_Link;  // r_hip rol
 
-        Right_Leg_jntarray.data[14] = Left_Calf_Link;   // r_hip pitch
-        Right_Leg_jntarray.data[6] = Right_Calf_Link;  // r_knee pitch
+        Right_Leg_jntarray.data[12] = Left_Calf_Link;   // r_hip pitch
+        Right_Leg_jntarray.data[5] = Right_Calf_Link;  // r_knee pitch
 
-        Right_Leg_jntarray.data[5] = Right_Thigh_Link; // r_ankle pitch
-        Right_Leg_jntarray.data[4] = Right_Hip_Link;   // r_ankle roll
+        Right_Leg_jntarray.data[4] = Right_Thigh_Link; // r_ankle pitch
+        Right_Leg_jntarray.data[3] = Right_Hip_Link;   // r_ankle roll
 
-        Right_Leg_jntarray.data[12] = Left_Hip_Link;    // r_hip yaw
-        Right_Leg_jntarray.data[13] = Left_Thigh_Link;  // r_hip rol
+        Right_Leg_jntarray.data[10] = Left_Hip_Link;    // r_hip yaw
+        Right_Leg_jntarray.data[11] = Left_Thigh_Link;  // r_hip rol
  
 
 
-        Left_Arm_jntarray.data[3]  = Right_Hand_Link;
-        Left_Arm_jntarray.data[11]  = Left_Hand_Link; 
 
         Left_Arm_jntarray.data[0]  = Right_Upper_Shoulder_Link; 
         Left_Arm_jntarray.data[8]  = Left_Upper_Shoulder_Link;
@@ -536,13 +516,13 @@ public:
         Left_Arm_jntarray.data[10]  = Left_Lower_Shoulder_Link;
 
         Left_Leg_jntarray.data[7] = Right_Foot_Link;  // r_hip yaw
-        Left_Leg_jntarray.data[15] = Left_Foot_Link;   // r_hip rol
+        Left_Leg_jntarray.data[13] = Left_Foot_Link;   // r_hip rol
 
         Left_Leg_jntarray.data[6] = Right_Calf_Link;  // r_hip pitch
         Left_Leg_jntarray.data[14] = Left_Calf_Link;   // r_knee pitch
 
-        Left_Leg_jntarray.data[13] = Left_Thigh_Link;  // r_ankle pitch
-        Left_Leg_jntarray.data[12] = Left_Hip_Link;    // r_ankle roll
+        Left_Leg_jntarray.data[12] = Left_Thigh_Link;  // r_ankle pitch
+        Left_Leg_jntarray.data[11] = Left_Hip_Link;    // r_ankle roll
 
         Left_Leg_jntarray.data[4] = Right_Hip_Link;   // r_hip yaw
         Left_Leg_jntarray.data[5] = Right_Thigh_Link; // r_hip rol
@@ -565,8 +545,7 @@ public:
             pb_Right_Mid_Shoulder_Link.publish(radi);
             radi.data = Right_Lower_Shoulder_Link;
             pb_Right_Lower_Shoulder_Link.publish(radi);
-            radi.data = Right_Hand_Link;
-            pb_Right_Hand_Link.publish(radi);
+
 
             radi.data = Right_Hip_Link;
             pb_Right_Hip_Link.publish(radi);
@@ -583,8 +562,7 @@ public:
             pb_Left_Mid_Shoulder_Link.publish(radi);
             radi.data = Left_Lower_Shoulder_Link;
             pb_Left_Lower_Shoulder_Link.publish(radi);
-            radi.data = Left_Hand_Link;
-            pb_Left_Hand_Link.publish(radi);
+
 
             radi.data = Left_Hip_Link;
             pb_Left_Hip_Link.publish(radi);
@@ -720,18 +698,18 @@ public:
         point_mass r_CoM, l_CoM;
         for(int i=0;i<Right_Arm.getNrOfSegments();i++){
 
-            Right_Arm_fk_solver->JntToCart(Right_Arm_jntarray,Right_Hand,i+1); // calculate the forward kinematics and stores it in Left_Hand
+            Right_Arm_fk_solver->JntToCart(Right_Arm_jntarray,Right_Lower_Shoulder,i+1); // calculate the forward kinematics and stores it in Left_Lower_Shoulder
             double r_roll,r_pitch,r_yaw;
-            Right_Hand.M.GetRPY(r_roll,r_pitch,r_yaw);
-            KDL::Rotation rot_inv=Right_Hand.M.Inverse();
+            Right_Lower_Shoulder.M.GetRPY(r_roll,r_pitch,r_yaw);
+            KDL::Rotation rot_inv=Right_Lower_Shoulder.M.Inverse();
             KDL::Vector link_cog=Right_Arm.getSegment(i).getInertia().getCOG();
             KDL::Vector link_cog_refbase;
-            KDL::Vector link_temp=rot_inv.operator*(Right_Hand.p);
+            KDL::Vector link_temp=rot_inv.operator*(Right_Lower_Shoulder.p);
             // the COG of the link is computed with respect to the base frame and added to the total COG of the robot
             link_cog_refbase.data[0] = link_temp.data[0] + link_cog.data[0];
             link_cog_refbase.data[1] = link_temp.data[1] + link_cog.data[1];
             link_cog_refbase.data[2] = link_temp.data[2] + link_cog.data[2];
-            link_cog_refbase.operator=(Right_Hand.M.operator*(link_cog_refbase));
+            link_cog_refbase.operator=(Right_Lower_Shoulder.M.operator*(link_cog_refbase));
             r_CoM.x += link_cog_refbase.data[0] * Right_Arm.getSegment(i).getInertia().getMass();
             r_CoM.y += link_cog_refbase.data[1] * Right_Arm.getSegment(i).getInertia().getMass();
             r_CoM.z += link_cog_refbase.data[2] * Right_Arm.getSegment(i).getInertia().getMass();
@@ -747,7 +725,7 @@ public:
                           <<" " <<Right_Arm.getSegment(i).getName()<<" mass =" << Right_Arm.getSegment(i).getInertia().getMass()
                           <<"     Rotation :" <<r_roll<< " " <<r_pitch<<" "<<r_yaw
                           << "    Mass Trans : " << r_CoM.x << "  " << r_CoM.y << "  " << r_CoM.z << ""
-                          <<"     Translation main : "<<Right_Hand.p[0]<<" "<<Right_Hand.p[1]<<" "<<Right_Hand.p[2]<<"\n";
+                          <<"     Translation main : "<<Right_Lower_Shoulder.p[0]<<" "<<Right_Lower_Shoulder.p[1]<<" "<<Right_Lower_Shoulder.p[2]<<"\n";
 
             }
             humanoid_CoM.x = r_CoM.x / r_CoM.mass;
@@ -755,18 +733,18 @@ public:
 
         }
         for(int i=0; i<Left_Arm.getNrOfSegments();i++){
-            Left_Arm_fk_solver->JntToCart(Left_Arm_jntarray,Left_Hand,i+1); // calculate the forward kinematics and stores it in Right_Hand
+            Left_Arm_fk_solver->JntToCart(Left_Arm_jntarray,Left_Lower_Shoulder,i+1); // calculate the forward kinematics and stores it in Right_Lower_Shoulder
             double l_roll,l_pitch,l_yaw;
-            Left_Hand.M.GetRPY(l_roll,l_pitch,l_yaw);
-            KDL::Rotation rot_inv=Left_Hand.M.Inverse();
+            Left_Lower_Shoulder.M.GetRPY(l_roll,l_pitch,l_yaw);
+            KDL::Rotation rot_inv=Left_Lower_Shoulder.M.Inverse();
             KDL::Vector link_cog=Left_Arm.getSegment(i).getInertia().getCOG();
             KDL::Vector link_cog_refbase;
-            KDL::Vector link_temp=rot_inv.operator*(Left_Hand.p);
+            KDL::Vector link_temp=rot_inv.operator*(Left_Lower_Shoulder.p);
             // the COG of the link is computed with respect to the base frame and added to the total COG of the robot
             link_cog_refbase.data[0] = link_temp.data[0] + link_cog.data[0];
             link_cog_refbase.data[1] = link_temp.data[1] + link_cog.data[1];
             link_cog_refbase.data[2] = link_temp.data[2] + link_cog.data[2];
-            link_cog_refbase.operator=(Left_Hand.M.operator*(link_cog_refbase));
+            link_cog_refbase.operator=(Left_Lower_Shoulder.M.operator*(link_cog_refbase));
             l_CoM.x += link_cog_refbase.data[0] * Left_Arm.getSegment(i).getInertia().getMass();
             l_CoM.y += link_cog_refbase.data[1] * Left_Arm.getSegment(i).getInertia().getMass();
             l_CoM.z += link_cog_refbase.data[2] * Left_Arm.getSegment(i).getInertia().getMass();
@@ -783,7 +761,7 @@ public:
                           <<" " <<Left_Arm.getSegment(i).getName()<<" mass =" << Left_Arm.getSegment(i).getInertia().getMass()
                           <<"     Rotation :" <<l_roll<< " " <<l_pitch<<" "<<l_yaw
                           << "    Mass Trans : " << l_CoM.x << "  " << l_CoM.y << "  " << l_CoM.z << ""
-                          <<"     Translation main : "<<Left_Hand.p[0]<<" "<<Left_Hand.p[1]<<" "<<Left_Hand.p[2]<<"\n";
+                          <<"     Translation main : "<<Left_Lower_Shoulder.p[0]<<" "<<Left_Lower_Shoulder.p[1]<<" "<<Left_Lower_Shoulder.p[2]<<"\n";
 
             }
             humanoid_CoM.x += l_CoM.x / l_CoM.mass;
@@ -958,22 +936,20 @@ public:
         double jntstate[] = {(T_Right_Upper_Shoulder_Link- Right_Upper_Shoulder_Link)/freq,//0
                              (T_Right_Mid_Shoulder_Link-Right_Mid_Shoulder_Link)/freq,//1
                              (T_Right_Lower_Shoulder_Link-Right_Lower_Shoulder_Link)/freq,//2
-                             (T_Right_Hand_Link-Right_Hand_Link)/freq,//3
 
-                             (T_Right_Hip_Link - Right_Hip_Link) / freq,//4
-                             (T_Right_Thigh_Link - Right_Thigh_Link) / freq,//5
-                             (T_Right_Calf_Link - Right_Calf_Link) / freq,//6
-                             (T_Right_Foot_Link - Right_Foot_Link) / freq,//7
+                             (T_Right_Hip_Link - Right_Hip_Link) / freq,//3
+                             (T_Right_Thigh_Link - Right_Thigh_Link) / freq,//4
+                             (T_Right_Calf_Link - Right_Calf_Link) / freq,//5
+                             (T_Right_Foot_Link - Right_Foot_Link) / freq,//6
 
-                             (T_Left_Upper_Shoulder_Link- Left_Upper_Shoulder_Link)/freq,//8
-                             (T_Left_Mid_Shoulder_Link-Left_Mid_Shoulder_Link)/freq,//9
-                             (T_Left_Lower_Shoulder_Link-Left_Lower_Shoulder_Link)/freq,//10
-                             (T_Left_Hand_Link-Left_Hand_Link)/freq,//11
+                             (T_Left_Upper_Shoulder_Link- Left_Upper_Shoulder_Link)/freq,//7
+                             (T_Left_Mid_Shoulder_Link-Left_Mid_Shoulder_Link)/freq,//8
+                             (T_Left_Lower_Shoulder_Link-Left_Lower_Shoulder_Link)/freq,//9
 
-                             (T_Left_Hip_Link - Left_Hip_Link) / freq,//12
-                             (T_Left_Thigh_Link - Left_Thigh_Link) / freq,//13
-                             (T_Left_Calf_Link - Left_Calf_Link) / freq,//14
-                             (T_Left_Foot_Link - Left_Foot_Link) / freq//15
+                             (T_Left_Hip_Link - Left_Hip_Link) / freq,//10
+                             (T_Left_Thigh_Link - Left_Thigh_Link) / freq,//11
+                             (T_Left_Calf_Link - Left_Calf_Link) / freq,//12
+                             (T_Left_Foot_Link - Left_Foot_Link) / freq//13
                              };
         stability humanoid_stability;
         // define a boolean variable to check if the humanoid is stable or not
@@ -1377,7 +1353,8 @@ int main(int argc, char **argv)
     std::string urdf_file;
     nh.getParam("urdf_file", urdf_file);
     // el function el gya 7tdrb error 34n m3nda4 7ga esmha base link
-    humanoid_kd humanoid(&nh, urdf_file, "base_footprint", "Right_Foot_Link", "Left_foot_Link","Right_Lower_Shoulder_link","Left_Lower_Shoulder_Link");
+    humanoid_kd humanoid(&nh, urdf_file, "base_link", "Right_Foot_Link", "Left_foot_Link","Right_Lower_Shoulder_link","Left_Lower_Shoulder_Link");
+
     KDL::ChainFkSolverPos_recursive Right_Leg_fk_solver(humanoid.Right_Leg);
     KDL::ChainFkSolverPos_recursive Left_Leg_fk_solver(humanoid.Left_Leg);
     KDL::ChainFkSolverPos_recursive Right_Arm_fk_solver(humanoid.Right_Arm);
