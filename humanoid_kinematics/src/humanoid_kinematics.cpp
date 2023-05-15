@@ -35,6 +35,7 @@ using namespace KDL;
 #define foot_y_size 0.018
 #define foot_y_size2 -0.018
 
+
 // #define stance_value 0.001
 // Initializing mass point
 class point_mass
@@ -90,7 +91,7 @@ class humanoid_kd
     KDL::JntArray Right_Arm_jntarray;
     KDL::JntArray Left_Arm_jntarray;
     // initializing array of home
-    double home[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    double home[14] = {0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0};
     // initializing 2 point masses(humanoid CoM and Centroid)
     point_mass humanoid_CoM, centroid;
     // initializing variables of both (legs, imu and base) roll pitch yaw
@@ -105,13 +106,16 @@ class humanoid_kd
         read_Right_Thigh_Link,
         read_Right_Calf_Link,
         read_Right_Foot_Link,
+
         read_Left_Hip_Link,
         read_Left_Thigh_Link,
         read_Left_Calf_Link,
         read_Left_Foot_Link,
+
         read_Right_Upper_Shoulder_Link,
         read_Right_Mid_Shoulder_Link,
         read_Right_Lower_Shoulder_Link,
+
         read_Left_Upper_Shoulder_Link,
         read_Left_Mid_Shoulder_Link,
         read_Left_Lower_Shoulder_Link,
@@ -200,7 +204,7 @@ class humanoid_kd
 
 public:
     bool gazebo = 1,
-         real = 0;
+        real = 0;
     // ana fo2 3araft tree we joint array ! dlwa2ty ba3araf chain we frame
     KDL::Chain Right_Leg, Left_Leg, Right_Arm,Left_Arm;
     KDL::Frame Right_Foot, Left_Foot,Right_Lower_Shoulder,Left_Lower_Shoulder;
@@ -253,7 +257,8 @@ public:
         }
         else
         {
-            std::cout << "Success to construct kdl tree\n";
+           // std::cout << "Success to construct kdl tree\n";
+            std::cout << "lalala";
             //std::cout<< humanoid_tree.getSegments(); //Trying to get the name of segments LAST EDIT
             //std::map<std::string,TreeElement>::const_iterator root=humanoid_tree.getRootSegment();
         }
@@ -535,16 +540,24 @@ public:
          *
          * @param r -> A pointer to a ROS rate object used to control the frequency of publishing joint positions.
          */
-
-        if (gazebo)
+        std::cout <<"entered joint publish";
+        if (true)
         {
+            std::cout <<"element 0";
             std_msgs::Float64 radi;
+            std::cout <<"element 1";
             radi.data = Right_Upper_Shoulder_Link;
+            std::cout <<"element 2";
             pb_Right_Upper_Shoulder_Link.publish(radi);
+            std::cout <<"element 3";
             radi.data = Right_Mid_Shoulder_Link;
+            std::cout <<"element 4";
             pb_Right_Mid_Shoulder_Link.publish(radi);
+            std::cout <<"element 5";
             radi.data = Right_Lower_Shoulder_Link;
+            std::cout <<"element 6";
             pb_Right_Lower_Shoulder_Link.publish(radi);
+            std::cout <<"element 7";
 
 
             radi.data = Right_Hip_Link;
@@ -573,7 +586,7 @@ public:
             radi.data = Left_Foot_Link;
             pb_Left_Foot_Link.publish(radi);
         }
-        if (real)
+        /*if (real)
         {
             std::vector<double> temp;
             trajectory_msgs::JointTrajectory joint_traj;
@@ -612,7 +625,7 @@ public:
             traj_point.time_from_start = ros::Duration(0.03333);
             joint_traj.points.push_back(traj_point);
             pb_traj.publish(joint_traj);
-        }
+        }*/
         r->sleep();
     }
 // joe: check this fun.
@@ -916,59 +929,53 @@ public:
         }
     }
 
+    double jntstate[14];
+    double Kp, Ki, Kd,
+           error_x, error_y, 
+           derivative_error_x, derivative_error_y,
+           integral_error_x, integral_error_y,
+           P_limit, I_limit, D_limit, Link_limit;
+    bool stable;
+    stability humanoid_stability;
+    double P_x, P_y, I_x, I_y, D_x, D_y;
+            
+
     bool humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver ,ros::Rate *rate, int freq = 200)
     {
-        /**
-         * The function uses a PID controller to adjust the joint angles of a humanoid robot to maintain
-         * stability while walking.
-         *
-         * @param state a character indicating which foot is on the ground ('r' for right, 'l' for left, 'd'
-         * for double support)
-         * @param r_lrg_fk_solver A pointer to a KDL::ChainFkSolverPos_recursive object for the right leg of the
-         * humanoid robot.
-         * @param Left_Leg_fk_solver A pointer to a KDL::ChainFkSolverPos_recursive object for the left leg of the
-         * humanoid robot.
-         * @param rate The rate at which the loop runs, in Hz. It is used to calculate the time interval
-         * between each iteration of the loop.
-         * @param freq The frequency at which the loop runs, in Hz.
-         */
+        jntstate[0] = (T_Right_Upper_Shoulder_Link- Right_Upper_Shoulder_Link);//0
+        jntstate[1] = (T_Right_Mid_Shoulder_Link-Right_Mid_Shoulder_Link);//1
+        jntstate[2] = (T_Right_Lower_Shoulder_Link-Right_Lower_Shoulder_Link);//2
+        jntstate[3] = (T_Right_Hip_Link - Right_Hip_Link);//3
+        jntstate[4] = (T_Right_Thigh_Link - Right_Thigh_Link);//4
+        jntstate[5] = (T_Right_Calf_Link - Right_Calf_Link);//5
+        jntstate[6] = (T_Right_Foot_Link - Right_Foot_Link);//6
+        jntstate[7] = (T_Left_Upper_Shoulder_Link- Left_Upper_Shoulder_Link);//7
+        jntstate[8] = (T_Left_Mid_Shoulder_Link-Left_Mid_Shoulder_Link);//8
+        jntstate[9] = (T_Left_Lower_Shoulder_Link-Left_Lower_Shoulder_Link);//9
+        jntstate[10] = (T_Left_Hip_Link - Left_Hip_Link);//10
+        jntstate[11] = (T_Left_Thigh_Link - Left_Thigh_Link);//11
+        jntstate[12] = (T_Left_Calf_Link - Left_Calf_Link);//12
+        jntstate[13] = (T_Left_Foot_Link - Left_Foot_Link);//13
 
-        double jntstate[] = {(T_Right_Upper_Shoulder_Link- Right_Upper_Shoulder_Link)/freq,//0
-                             (T_Right_Mid_Shoulder_Link-Right_Mid_Shoulder_Link)/freq,//1
-                             (T_Right_Lower_Shoulder_Link-Right_Lower_Shoulder_Link)/freq,//2
-
-                             (T_Right_Hip_Link - Right_Hip_Link) / freq,//3
-                             (T_Right_Thigh_Link - Right_Thigh_Link) / freq,//4
-                             (T_Right_Calf_Link - Right_Calf_Link) / freq,//5
-                             (T_Right_Foot_Link - Right_Foot_Link) / freq,//6
-
-                             (T_Left_Upper_Shoulder_Link- Left_Upper_Shoulder_Link)/freq,//7
-                             (T_Left_Mid_Shoulder_Link-Left_Mid_Shoulder_Link)/freq,//8
-                             (T_Left_Lower_Shoulder_Link-Left_Lower_Shoulder_Link)/freq,//9
-
-                             (T_Left_Hip_Link - Left_Hip_Link) / freq,//10
-                             (T_Left_Thigh_Link - Left_Thigh_Link) / freq,//11
-                             (T_Left_Calf_Link - Left_Calf_Link) / freq,//12
-                             (T_Left_Foot_Link - Left_Foot_Link) / freq//13
-                             };
-        stability humanoid_stability;
-        // define a boolean variable to check if the humanoid is stable or not
-        bool stable = false;
-        // define the PID controller parameters
-        double Kp = 20.0 / freq,
-               Ki = 1.5 / freq,
-               Kd = 0.0 / freq,
-               error_x = 0.0,
-               error_y = 0.0,
-               derivative_error_x = 0.0,
-               derivative_error_y = 0.0,
-               integral_error_x = 0.0,
-               integral_error_y = 0.0,
-               P_limit = 0.2 / freq,
-               I_limit = 4.0 / freq,
-               D_limit = 200000.0 / freq;
-        for (int k = 0; k < freq; k++)
+        stable = false;
+        Kp = 20.0;
+        Ki = 1.5;
+        Kd = 0.0;
+        error_x = 0.0;
+        error_y = 0.0;
+        derivative_error_x = 0.0;
+        derivative_error_y = 0.0;
+        integral_error_x = 0.0;
+        integral_error_y = 0.0;
+        P_limit = 0.2;
+        I_limit = 4.0;
+        D_limit = 200000.0;
+        Link_limit=2000.0;
+    
+        std::cout << "state = " << state <<"\n" ;
+        for (int k = 0; k < 14; k++)
         {
+            std::cout << "Inside foor loop, k = " << k<<"\n" << state <<"\n" ;
             // add the step size to the joint angles
             add_jointpose(jntstate);
             // move the ankle joints to maintain the humanoid's balance
@@ -990,6 +997,160 @@ public:
             // calculate the integral error in the x and y directions
             integral_error_x += error_x;
             integral_error_y += error_y;
+            // calculate P, I, D
+            P_x = (Kp * error_x);
+            P_y = (Kp * error_y);
+            I_x = (Ki * integral_error_x);
+            I_y = (Ki * integral_error_y);
+            D_x = (Kd * derivative_error_x);
+            D_y = (Kd * derivative_error_y);
+            // Setting the maximum limits for the Propotional controller on x
+            if (P_x > P_limit) P_x = P_limit; else if (P_x < -P_limit) P_x = -P_limit;
+            // Setting the maximum limits for the Propotional controller on y
+            if (P_y > P_limit) P_y = P_limit; else if (P_y < -P_limit) P_y = -P_limit;
+            // Setting the maximum limits for the Integral controller on x
+            if (I_x > I_limit) I_x = I_limit; else if (I_x < -I_limit) I_x = -I_limit;
+            // Setting the maximum limits for the Integral controller on y
+            if (I_y > I_limit) I_y = I_limit; else if (I_y < -I_limit) I_y = -I_limit;
+            // Setting the maximum limits for the Derivative controller on x
+            if (D_x > D_limit) D_x = D_limit; else if (D_x < -D_limit) D_x = -D_limit;
+            // Setting the maximum limits for the Derivative controller on y
+            if (D_y > D_limit) D_y = D_limit; else if (D_y < -D_limit) D_y = -D_limit;
+            // calculate the new joint angles for the PID controller
+            if (state == 'r')
+            {
+                Right_Hip_Link += P_y + I_y + D_y;   // 
+                Right_Thigh_Link -= P_x + I_x + D_x; // 
+                if (Right_Hip_Link > Link_limit) Right_Hip_Link = Link_limit; else if (Right_Hip_Link < -Link_limit) Right_Hip_Link = -Link_limit;
+                if (Right_Thigh_Link > Link_limit) Right_Thigh_Link = Link_limit; else if (Right_Thigh_Link < -Link_limit) Right_Thigh_Link = -Link_limit;
+
+               /* if (Left_Foot.p.data[1] < 0.16)
+                {
+                    Left_Hip_Link += Kp / 3 * (0.16 - Left_Foot.p.data[1]);
+                }*/
+            }
+            else if (state == 'l')
+            {
+                Left_Hip_Link += P_y + I_y + D_y;   //
+                Left_Thigh_Link -= P_x + I_x + D_x; // 
+                if (Left_Hip_Link > Link_limit) Left_Hip_Link = Link_limit; else if (Left_Hip_Link < -Link_limit) Left_Hip_Link = -Link_limit;
+                if (Left_Thigh_Link > Link_limit) Left_Thigh_Link = Link_limit; else if (Left_Thigh_Link < -Link_limit) Left_Thigh_Link = -Link_limit;
+
+               /* if (Right_Foot.p.data[1] > -0.16)
+                {
+                    Right_Hip_Link -= Kp / 3 * (-Right_Foot.p.data[1] + 0.16);
+                }*/
+            }
+
+            else if (state == 'd')
+            {
+                Right_Hip_Link += (P_y + I_y + D_y);
+                Right_Thigh_Link -= (P_x + I_x + D_x);
+                Left_Hip_Link += (P_y + I_y + D_y);
+                Left_Thigh_Link -= (P_x + I_x + D_x);
+                if (Right_Hip_Link > Link_limit) Right_Hip_Link = Link_limit; else if (Right_Hip_Link < -Link_limit) Right_Hip_Link = -Link_limit;
+                if (Right_Thigh_Link > Link_limit) Right_Thigh_Link = Link_limit; else if (Right_Thigh_Link < -Link_limit) Right_Thigh_Link = -Link_limit;
+                if (Left_Hip_Link > Link_limit) Left_Hip_Link = Link_limit; else if (Left_Hip_Link < -Link_limit) Left_Hip_Link = -Link_limit;
+                if (Left_Thigh_Link > Link_limit) Left_Thigh_Link = Link_limit; else if (Left_Thigh_Link < -Link_limit) Left_Thigh_Link = -Link_limit;
+            }
+            //std::cout << "i finished the eighteenth part\n";
+            //joint_publish(rate);
+            //std::cout << "i finished the nineteenth part\n";
+            //com_publish(state, rate);
+            std::cout << "i finished the twentieth part\n";
+        }
+        std::cout << "===========================Finished the function======================================\n";
+
+
+    }
+
+    bool humanoid_will_go_on_old(char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver ,ros::Rate *rate, int freq = 200)
+    {
+        /**
+         * The function uses a PID controller to adjust the joint angles of a humanoid robot to maintain
+         * stability wRight_Hip_Linkhile walking.
+         *
+         * @param state a character indicating which foot is on the ground ('r' for right, 'l' for left, 'd'
+         * for double support)
+         * @param r_lrg_fk_solver A pointer to a KDL::ChainFkSolverPos_recursive object for the right leg of the
+         * humanoid robot.
+         * @param Left_Leg_fk_solver A pointer to a KDL::ChainFkSolverPos_recursive object for the left leg of the
+         * humanoid robot.
+         * @param rate The rate at which the loop runs, in Hz. It is used to calculate the time interval
+         * between each iteration of the loop.
+         * @param freq The frequency at which the loop runs, in Hz.
+         */
+
+        double jntstate[14] = {(T_Right_Upper_Shoulder_Link- Right_Upper_Shoulder_Link)/freq,//0
+                             (T_Right_Mid_Shoulder_Link-Right_Mid_Shoulder_Link)/freq,//1
+                             (T_Right_Lower_Shoulder_Link-Right_Lower_Shoulder_Link)/freq,//2
+
+                             (T_Right_Hip_Link - Right_Hip_Link) / freq,//3
+                             (T_Right_Thigh_Link - Right_Thigh_Link) / freq,//4
+                             (T_Right_Calf_Link - Right_Calf_Link) / freq,//5
+                             (T_Right_Foot_Link - Right_Foot_Link) / freq,//6
+
+                             (T_Left_Upper_Shoulder_Link- Left_Upper_Shoulder_Link)/freq,//7
+                             (T_Left_Mid_Shoulder_Link-Left_Mid_Shoulder_Link)/freq,//8
+                             (T_Left_Lower_Shoulder_Link-Left_Lower_Shoulder_Link)/freq,//9
+
+                             (T_Left_Hip_Link - Left_Hip_Link) / freq,//10
+                             (T_Left_Thigh_Link - Left_Thigh_Link) / freq,//11
+                             (T_Left_Calf_Link - Left_Calf_Link) / freq,//12
+                             (T_Left_Foot_Link - Left_Foot_Link) / freq//13
+                             };
+        std::cout << "i finished the first part\n";
+        stability humanoid_stability;
+        std::cout << "i finished the second part\n";
+        // define a boolean variable to check if the humanoid is stable or not
+        bool stable = false;
+        std::cout << "i finished the third part\n";
+        // define the PID controller parameters
+        double Kp = 20.0 / freq,
+               Ki = 1.5 / freq,
+               Kd = 0.0 / freq,
+               error_x = 0.0,
+               error_y = 0.0,
+               derivative_error_x = 0.0,
+               derivative_error_y = 0.0,
+               integral_error_x = 0.0,
+               integral_error_y = 0.0,
+               P_limit = 0.2 / freq,
+               I_limit = 4.0 / freq,
+               D_limit = 200000.0 / freq;
+        std::cout << "i finished the fourth part "<<"freq = "<<freq<<"\n";
+        for (int k = 0; k < 14; k++)
+        {
+            // add the step size to the joint angles
+            add_jointpose(jntstate);
+            std::cout << "i finished the fifth part" << k<<"\n" << state <<"\n" ;
+            // move the ankle joints to maintain the humanoid's balance
+            //  auto_ankle(state);
+            // set the kdjointpose variable to the new joint angles
+            set_kdjointpose();
+            std::cout << "i finished the sixth part" << k<<"\n" << state <<"\n" ;
+            // compute the new center of mass and centroid
+            humanoid_CoM = compute_com(state, Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver, 0);
+            std::cout << "i finished the seventh part" << k<<"\n" << state <<"\n" ;
+            centroid = compute_centroid(state, 0);
+            std::cout << "i finished the eighth part"  << k<<"\n" <<state <<"\n" ;
+            // check if the humanoid is stable
+            humanoid_stability = quick_is_stable();
+            std::cout << "i finished the ninth part" << k <<"\n" <<state <<"\n" ;
+            stable = humanoid_stability.check();
+            std::cout << "i finished the tenth part" << k<< "\n" << state <<"\n" ;
+            // caclulate the error in the x and y directions
+            error_x = humanoid_CoM.x - centroid.x;
+            error_y = humanoid_CoM.y - centroid.y;
+            std::cout << "i finished the eleventh part" << k<<"\n" << state <<"\n" ;
+            // calculate the derivative error in the x and y directions
+            derivative_error_x = (humanoid_CoM.x - centroid.x) - error_x;
+            derivative_error_y = (humanoid_CoM.y - centroid.y) - error_y;
+            std::cout << "i finished the twelveth part" << k << "\n" << state <<"\n" ;
+            // calculate the integral error in the x and y directions
+            integral_error_x += error_x;
+            integral_error_y += error_y;
+            std::cout << "i finished the thirteenth part" << k<< "\n" << state <<"\n" ;
 
             double P_x = (Kp * error_x),
                    P_y = (Kp * error_y),
@@ -997,6 +1158,7 @@ public:
                    I_y = (Ki * integral_error_y),
                    D_x = (Kd * derivative_error_x),
                    D_y = (Kd * derivative_error_y);
+            std::cout << "i finished the fourteenth part\n";
             // Setting the maximum limits for the Propotional controller on x
             if (P_x > P_limit)
             {
@@ -1054,6 +1216,7 @@ public:
             // calculate the new joint angles for the PID controller
             if (state == 'r')
             {
+                std::cout << "i finished the fifteenth part\n";
                 Right_Hip_Link += P_y + I_y + D_y;   // 
                 Right_Thigh_Link -= P_x + I_x + D_x; // 
 
@@ -1064,6 +1227,7 @@ public:
             }
             else if (state == 'l')
             {
+                std::cout << "i finished the sixteenth part\n";
                 Left_Hip_Link += P_y + I_y + D_y;   //
                 Left_Thigh_Link -= P_x + I_x + D_x; // 
 
@@ -1075,15 +1239,20 @@ public:
 
             else if (state == 'd')
             {
+                std::cout << "i finished the seventeenth part\n";
                 Right_Hip_Link += (P_y + I_y + D_y);
                 Right_Thigh_Link -= (P_x + I_x + D_x);
                 Left_Hip_Link += (P_y + I_y + D_y);
                 Left_Thigh_Link -= (P_x + I_x + D_x);
             }
-            joint_publish(rate);
-            com_publish(state, rate);
+            std::cout << "i finished the eighteenth part\n";
+            //joint_publish(rate);
+            std::cout << "i finished the nineteenth part\n";
+            //com_publish(state, rate);
+            std::cout << "i finished the twentieth part\n";
         }
-        set_T_equal_jointpose();
+        //set_T_equal_jointpose();
+         std::cout << "i finished the twentieth one part\n";
     }
 
     bool moveleg(double *target, char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver,ros::Rate *rate, int freq = 200)
@@ -1103,7 +1272,7 @@ public:
          * @param freq The frequency of the loop in Hz. It determines how many times the loop will run per
          * second.
          */
-        double jntstate[] = {(T_Right_Upper_Shoulder_Link-Right_Upper_Shoulder_Link)/freq,
+        double jntstate[14] = {(T_Right_Upper_Shoulder_Link-Right_Upper_Shoulder_Link)/freq,
                              (T_Right_Mid_Shoulder_Link-Right_Mid_Shoulder_Link)/freq,
                              (T_Right_Lower_Shoulder_Link-Right_Lower_Shoulder_Link)/freq,
                              (T_Right_Hip_Link - Right_Hip_Link) / freq,
@@ -1258,7 +1427,7 @@ public:
                 Left_Hip_Link += (P_y + I_y + D_y);
                 Left_Thigh_Link -= (P_x + I_x + D_x);
             }
-            joint_publish(rate);
+           // joint_publish(rate);
             com_publish(state, rate);
         }
         set_T_equal_jointpose();
@@ -1333,7 +1502,7 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
             humanoid->T_Left_Hip_Link = 0;
         }
         humanoid->humanoid_will_go_on(foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver, rate, sampling);
-        double tfoot[] = {x, y, 0.0};
+        double tfoot[3] = {x, y, 0.0};
         humanoid->moveleg(tfoot, foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver, rate, sampling * 2);
         humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver, rate, sampling);
     }
@@ -1364,20 +1533,30 @@ int main(int argc, char **argv)
     // check el path bta3 el footstep
     ros::Subscriber sub_path = nh.subscribe<nav_msgs::Path>("humanoid/footstep_path", 100, boost::bind(get_path, _1, sampling, &rate, &humanoid, &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver));
 
-    double home[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    double home[14] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0};
     humanoid.set_jointpose(home);
     humanoid.set_T_jointpose(home);
+    std::cout <<"lalala" ;
     humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver, &rate, 70);
-
+    humanoid.humanoid_will_go_on('r', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver, &rate, 70);
+    humanoid.humanoid_will_go_on('l', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver, &rate, 70);
+//laalal
+    std::cout << "finished\n";
     humanoid.T_Right_Thigh_Link = -0.3;
     humanoid.T_Right_Calf_Link = 0.55;
     humanoid.T_Left_Thigh_Link = -0.3;
     humanoid.T_Left_Calf_Link = 0.55;
-    humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver,&rate, 100);
+    std::cout << "finished 2\n ";
 
     std::clock_t begin = clock();
-    ros::spin();
+    
+  //  ros::spin();
+    humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver, &rate, 70);
+    std::cout << "finished 3\n ";
+    humanoid.humanoid_will_go_on('l', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver, &rate, 70);
+    std::cout << "finished 4\n ";
+
     std::clock_t end = clock();
-    std::cout << "elapsed time is " << double(end - begin) / CLOCKS_PER_SEC << "\n";
+    std::cout << "elapsed time is \n " << double(end - begin) / CLOCKS_PER_SEC << "\n";
     return 1;
 }
