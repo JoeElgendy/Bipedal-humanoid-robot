@@ -33,7 +33,9 @@ include_directories(
 )
 
 
-add_executable(humanoid_kinematics src/humanoid_kinematics.cpp )
+add_executable(humanoid_kinematics src/humanoid_kinematics.cpp src/kinematics_full.cpp )
+
+
 target_link_libraries(humanoid_kinematics ${catkin_LIBRARIES})
 
 
