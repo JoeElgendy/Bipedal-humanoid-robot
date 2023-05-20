@@ -278,10 +278,10 @@ void kinematics_full::add_jointpose(double *jnt){
 void kinematics_full::joint_publish(ros::Rate *r){
     std_msgs::Float64 radi;
 
-    ros::Duration duration(1/20);
+    //ros::Duration duration(1/20);
     radi.data= Right_Upper_Shoulder_Link; if(radi.data) pb_Right_Upper_Shoulder_Link.publish(radi);
     radi.data = Right_Mid_Shoulder_Link;  if(radi.data) pb_Right_Mid_Shoulder_Link.publish(radi);
-    radi.data = Right_Lower_Shoulder_Link;if(radi.data)pb_Right_Lower_Shoulder_Link.publish(radi);
+    radi.data = Right_Lower_Shoulder_Link;if(radi.data) pb_Right_Lower_Shoulder_Link.publish(radi);
 
     radi.data = Right_Hip_Link;   if(radi.data) pb_Right_Hip_Link.publish(radi);
     radi.data = Right_Thigh_Link; if(radi.data) pb_Right_Thigh_Link.publish(radi);
@@ -297,13 +297,14 @@ void kinematics_full::joint_publish(ros::Rate *r){
     radi.data = Left_Calf_Link; if(radi.data) pb_Left_Calf_Link.publish(radi);
     radi.data = Left_Foot_Link; if(radi.data) pb_Left_Foot_Link.publish(radi);
 
-    duration.sleep();
+    //duration.sleep();
+    r->sleep();
 }
 void kinematics_full::com_publish(char state,ros::Rate *r){
     ps.point.x = humanoid_CoM.x;
     ps.point.y = humanoid_CoM.y;
     ps.point.z = 0;
-    ros::Duration duration(1/20);
+    //ros::Duration duration(1/20);
         if (state == 'r' || state == 'd')
         {
             ps.header.frame_id = "Right_Foot_Link";
@@ -325,10 +326,10 @@ void kinematics_full::com_publish(char state,ros::Rate *r){
         ps_Right_Foot.point.x = Right_Foot.p.data[0];
         ps_Right_Foot.point.y = Right_Foot.p.data[1];
         ps_Right_Foot.point.z = Right_Foot.p.data[2];
-        if(pb_com)             pb_com.publish(ps);
-        if(pb_centroid)        pb_centroid.publish(ps_centroid);
-        if(pb_Left_Foot_Link)  pb_Left_Foot_Link.publish(ps_Left_Foot);
-        if(pb_Right_Foot_Link) pb_Right_Foot_Link.publish(ps_Right_Foot);
+        if(ps.point.x            || ps.point.y            || ps.point.z           )  pb_com.publish(ps);
+        if(ps_centroid.point.x   || ps_centroid.point.y   || ps_centroid.point.z  )  pb_centroid.publish(ps_centroid);
+        if(ps_Left_Foot.point.x  || ps_Left_Foot.point.y  || ps_Left_Foot.point.z )  pb_Left_Foot_Link.publish(ps_Left_Foot);
+        if(ps_Right_Foot.point.x || ps_Right_Foot.point.y || ps_Right_Foot.point.z)  pb_Right_Foot_Link.publish(ps_Right_Foot);
 
         std_msgs::Float64 centroid_x;
         std_msgs::Float64 centroid_y;
@@ -338,12 +339,14 @@ void kinematics_full::com_publish(char state,ros::Rate *r){
         com_x.data = humanoid_CoM.x;
         centroid_y.data = centroid.y;
         com_y.data = humanoid_CoM.y;
-        if(pb_com_x)      pb_com_x.publish(com_x);
-        if(pb_centroid_x) pb_centroid_x.publish(centroid_x);
-        if(pb_com_y)      pb_com_y.publish(com_y);
-        if(pb_centroid_y) pb_centroid_y.publish(centroid_y);
-        duration.sleep();
-}
+        if(com_x.data)      pb_com_x.publish(com_x);
+        if(centroid_x.data) pb_centroid_x.publish(centroid_x);
+        if(com_y.data)      pb_com_y.publish(com_y);
+        if(centroid_y.data) pb_centroid_y.publish(centroid_y);
+        //duration.sleep();
+        
+        r->sleep();
+        }
 point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver, bool verbose = 0)
 {
     point_mass r_CoM;
@@ -505,8 +508,7 @@ stability kinematics_full::quick_is_stable(bool verbose){
         {
             std::cout << "Humanoid_CoM :" << humanoid_CoM.x << "," << humanoid_CoM.y << "\n";
         }
-        // if the com is in between the centroid and the centroid + foot size then the humanoid is stable in x direction
-        // because the center of mass is in between the front and back of the fot, so the humanoid will not fall forward or backward
+
         if (centroid.x + foot_x_size2 < humanoid_CoM.x && humanoid_CoM.x < centroid.x + foot_x_size)
         {
             out.x = true;
@@ -515,8 +517,6 @@ stability kinematics_full::quick_is_stable(bool verbose){
                 std::cout << "x is stable\n";
             }
 
-            // if the com is in between the centroid and the centroid + foot size then the humanoid is stable in y direction
-            // because the center of mass is in between the left and right of the fot, so the humanoid will not fall left or right
             if (centroid.y + foot_y_size2 < humanoid_CoM.y && humanoid_CoM.y < centroid.y + foot_y_size)
             {
                 out.y = true;
