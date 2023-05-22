@@ -195,7 +195,7 @@ class kinematics_full{
         double T_Left_Thigh_Link;
         double T_Left_Calf_Link;
         double T_Left_Foot_Link;
-        double jntstate[14];
+        double jntstate[15];
         double kp;
         double ki;
         double kd;

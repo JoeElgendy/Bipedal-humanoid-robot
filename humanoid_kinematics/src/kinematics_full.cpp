@@ -6,63 +6,49 @@
 /****************************************************************/
 #include "kinematics_full.h"
 
-//upper 0 , mid 1 , lower 2 , hip 3 , thigh 4 , calf 5 , foot 6 , upper 7 , mid 8 , lower 9 , hip 10 , thigh 11 , calf 12 , foot 13
 void kinematics_full::fread_Right_Upper_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
     Right_Arm_jntarray.data[0] = msg->process_value;
-    Left_Arm_jntarray.data[7] = msg->process_value;
 }
 void kinematics_full::fread_Right_Mid_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
     Right_Arm_jntarray.data[1] = msg->process_value;
-    Left_Arm_jntarray.data[8] = msg->process_value;
 }
 void kinematics_full::fread_Right_Lower_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
     Right_Arm_jntarray.data[2] = msg->process_value;
-    Left_Arm_jntarray.data[9] = msg->process_value;
 }
 void kinematics_full::fread_Right_Hip_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[3] = msg->process_value;
-    Left_Arm_jntarray.data[10] = msg->process_value;
+    Right_Leg_jntarray.data[0] = msg->process_value;
 }
 void kinematics_full::fread_Right_Thigh_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[4] = msg->process_value;
-    Left_Arm_jntarray.data[11] = msg->process_value;
+    Right_Leg_jntarray.data[1] = msg->process_value;
 }
 void kinematics_full::fread_Right_Calf_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[5] = msg->process_value;
-    Left_Arm_jntarray.data[12] = msg->process_value;
+    Right_Leg_jntarray.data[2] = msg->process_value;
 }
 void kinematics_full::fread_Right_Foot_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[6] = msg->process_value;
-    Left_Arm_jntarray.data[13] = msg->process_value;
+    Right_Leg_jntarray.data[3] = msg->process_value;
 }
 
 void kinematics_full::fread_Left_Upper_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[7] = msg->process_value;
     Left_Arm_jntarray.data[0] = msg->process_value;
 }
 void kinematics_full::fread_Left_Mid_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[8] = msg->process_value;
     Left_Arm_jntarray.data[1] = msg->process_value;
 }
 void kinematics_full::fread_Left_Lower_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[9] = msg->process_value;
     Left_Arm_jntarray.data[2] = msg->process_value;
 }
+
 void kinematics_full::fread_Left_Hip_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[10] = msg->process_value;
-    Left_Arm_jntarray.data[3] = msg->process_value;
+    Left_Leg_jntarray.data[0] = msg->process_value;
 }
 void kinematics_full::fread_Left_Thigh_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[11] = msg->process_value;
-    Left_Arm_jntarray.data[4] = msg->process_value;
+    Left_Leg_jntarray.data[1] = msg->process_value;
 }
 void kinematics_full::fread_Left_Calf_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[12] = msg->process_value;
-    Left_Arm_jntarray.data[5] = msg->process_value;
+    Left_Leg_jntarray.data[2] = msg->process_value;
 }
 void kinematics_full::fread_Left_Foot_Link(const control_msgs::JointControllerState::ConstPtr& msg){
-    Right_Arm_jntarray.data[13] = msg->process_value;
-    Left_Arm_jntarray.data[6] = msg->process_value;
+    Left_Leg_jntarray.data[3] = msg->process_value;
 }
 
 kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string base ,std::string Right_Leg_End_Effector, std::string Left_Leg_End_Effector,std::string Right_Arm_End_Effector, std::string Left_Arm_End_Effector){
@@ -148,7 +134,6 @@ kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string
         Right_Arm_jntarray=KDL::JntArray(Right_Arm_Chain.getNrOfJoints());
         Left_Arm_jntarray=KDL::JntArray(Left_Arm_Chain.getNrOfJoints());
     }
-
 }
 
 void kinematics_full::set_jointpose(double *jnt){
@@ -212,47 +197,25 @@ void kinematics_full::set_T_equal_jointpose(){
 }
 
 void kinematics_full::set_kdjointpose(){
-    Right_Arm_jntarray.data[7]  = Left_Upper_Shoulder_Link;
+
     Right_Arm_jntarray.data[0]  = Right_Upper_Shoulder_Link;
-
-    Right_Arm_jntarray.data[8]  = Left_Mid_Shoulder_Link;
     Right_Arm_jntarray.data[1]  = Right_Mid_Shoulder_Link;
-
-    Right_Arm_jntarray.data[9]  = Left_Lower_Shoulder_Link;
     Right_Arm_jntarray.data[2]  = Right_Lower_Shoulder_Link;
 
-    Right_Leg_jntarray.data[13] = Left_Foot_Link;   
-    Right_Leg_jntarray.data[6] = Right_Foot_Link;  
-
-    Right_Leg_jntarray.data[12] = Left_Calf_Link;   
-    Right_Leg_jntarray.data[5] = Right_Calf_Link;  
-
-    Right_Leg_jntarray.data[4] = Right_Thigh_Link; 
-    Right_Leg_jntarray.data[3] = Right_Hip_Link;   
-
-    Right_Leg_jntarray.data[10] = Left_Hip_Link;    
-    Right_Leg_jntarray.data[11] = Left_Thigh_Link;  
-
-    Left_Arm_jntarray.data[7]  = Right_Upper_Shoulder_Link; 
     Left_Arm_jntarray.data[0]  = Left_Upper_Shoulder_Link;
-
-    Left_Arm_jntarray.data[8]  = Right_Mid_Shoulder_Link;
     Left_Arm_jntarray.data[1]  = Left_Mid_Shoulder_Link;
-
-    Left_Arm_jntarray.data[9]  = Right_Lower_Shoulder_Link;
     Left_Arm_jntarray.data[2]  = Left_Lower_Shoulder_Link;
 
-    Left_Leg_jntarray.data[13] = Right_Foot_Link;  
-    Left_Leg_jntarray.data[6] = Left_Foot_Link;   
+    Right_Leg_jntarray.data[0] = Right_Hip_Link;
+    Right_Leg_jntarray.data[1] = Right_Thigh_Link;
+    Right_Leg_jntarray.data[2] = Right_Calf_Link;
+    Right_Leg_jntarray.data[3] = Right_Foot_Link;
 
-    Left_Leg_jntarray.data[12] = Right_Calf_Link;  
-    Left_Leg_jntarray.data[5] = Left_Calf_Link;   
+    Left_Leg_jntarray.data[0] = Left_Hip_Link;
+    Left_Leg_jntarray.data[1] = Left_Thigh_Link;
+    Left_Leg_jntarray.data[2] = Left_Calf_Link;
+    Left_Leg_jntarray.data[3] = Left_Foot_Link;
 
-    Left_Leg_jntarray.data[4] = Left_Thigh_Link;  
-    Left_Leg_jntarray.data[3] = Left_Hip_Link;    
-
-    Left_Leg_jntarray.data[10] = Right_Hip_Link;   
-    Left_Leg_jntarray.data[11] = Right_Thigh_Link; 
 }
 
 void kinematics_full::add_jointpose(double *jnt){
@@ -297,7 +260,7 @@ void kinematics_full::joint_publish(ros::Rate *r){
     radi.data = Left_Calf_Link; if(radi.data) pb_Left_Calf_Link.publish(radi);
     radi.data = Left_Foot_Link; if(radi.data) pb_Left_Foot_Link.publish(radi);
 
-    //duration.sleep();
+   // duration.sleep();
     r->sleep();
 }
 void kinematics_full::com_publish(char state,ros::Rate *r){
@@ -344,7 +307,7 @@ void kinematics_full::com_publish(char state,ros::Rate *r){
         if(com_y.data)      pb_com_y.publish(com_y);
         if(centroid_y.data) pb_centroid_y.publish(centroid_y);
         //duration.sleep();
-        
+
         r->sleep();
         }
 point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver, bool verbose = 0)
@@ -409,14 +372,13 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
         {
             for (int i = 0; i < Right_Leg.getNrOfSegments(); i++)
             {
-                Right_Leg_fk_solver->JntToCart(Right_Leg_jntarray, Left_Foot, i + 1); // calculate the forward kinematics and stores it in Left_Foot
+                Right_Leg_fk_solver->JntToCart(Right_Leg_jntarray, Left_Foot, i + 1); 
                 double r_roll, r_pitch, r_yaw;
                 Left_Foot.M.GetRPY(r_roll, r_pitch, r_yaw);
-                KDL::Rotation rot_inv = Left_Foot.M.Inverse();                       // calculate the orientation with respect frame
-                KDL::Vector link_cog = Right_Leg.getSegment(i).getInertia().getCOG(); // the center of mass of the link with respect to the link frame
-                KDL::Vector link_cog_refbase;                                     // the center of mass of the link with respect to the base frame
+                KDL::Rotation rot_inv = Left_Foot.M.Inverse();                       
+                KDL::Vector link_cog = Right_Leg.getSegment(i).getInertia().getCOG(); 
+                KDL::Vector link_cog_refbase;                                     
                 KDL::Vector link_temp = rot_inv.operator*(Left_Foot.p);
-                // the COG of the link is computed with respect to the base frame and added to the total COG of the robot
                 link_cog_refbase.data[0] = link_temp.data[0] + link_cog.data[0];
                 link_cog_refbase.data[1] = link_temp.data[1] + link_cog.data[1];
                 link_cog_refbase.data[2] = link_temp.data[2] + link_cog.data[2];
@@ -425,7 +387,6 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
                 r_CoM.y += link_cog_refbase.data[1] * Right_Leg.getSegment(i).getInertia().getMass();
                 r_CoM.z += link_cog_refbase.data[2] * Right_Leg.getSegment(i).getInertia().getMass();
 
-                // i changed the if condition to 4 to match the no of links in the leg
                 if (i == 4)
                 {
                     base_roll = r_roll;
@@ -481,13 +442,13 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
 }
 
 point_mass kinematics_full::compute_centroid(char state,bool verbose){
-        if (state == 'r' || state == 'l') // R leg is the stance
+        if (state == 'r' || state == 'l') 
         {
             centroid.x = 0;
             centroid.y = 0;
             centroid.z = 0;
         } 
-        else if (state == 'd') // R is main leg for double support
+        else if (state == 'd') 
         {
             centroid.x = Left_Foot.p.data[0] / 2.0;
             centroid.y = Left_Foot.p.data[1] / 2.0;
@@ -592,16 +553,23 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
                 if(state == 'r'){
                     Right_Hip_Link += (P_y + I_y + D_y);
                     Right_Thigh_Link +=(P_x + I_x + D_x);
+                    if(Left_Foot.p.data[1]<0.16){
+                        Left_Hip_Link += kp /3 * (Right_Foot.p.data[1]+0.16);
+                    }
+                    
                 }
                 else if(state == 'l'){
                     Left_Hip_Link += (P_y + I_y + D_y);
                     Left_Thigh_Link +=(P_x + I_x + D_x);
+                    if(Right_Foot.p.data[1]>-0.16){
+                        Right_Hip_Link += kp /3 * (Left_Foot.p.data[1]+0.16);
+                    }
                 }
-                else if(state == 'b'){
-                    Right_Hip_Link += (P_y + I_y + D_y);
-                    Right_Thigh_Link +=(P_x + I_x + D_x);
-                    Left_Hip_Link += (P_y + I_y + D_y);
-                    Left_Thigh_Link +=(P_x + I_x + D_x);
+                else if(state == 'd'){
+                    Right_Hip_Link   += (P_y + I_y + D_y);
+                    Right_Thigh_Link -= (P_x + I_x + D_x);
+                    Left_Hip_Link    += (P_y + I_y + D_y);
+                    Left_Thigh_Link  -= (P_x + I_x + D_x);
                 }
                 kinematics_full::joint_publish(rate);
                 kinematics_full::com_publish(state,rate);          
@@ -647,7 +615,7 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
             for(int k=0 ; k<freq ; k++){
                 kinematics_full::add_jointpose(jntstate);
                 Right_Foot_Link = 0 - (Right_Thigh_Link + Right_Calf_Link);
-                Left_Foot_Link = 0 - (Left_Thigh_Link + Left_Calf_Link);
+                Left_Foot_Link  = 0 - (Left_Thigh_Link + Left_Calf_Link);
                 kinematics_full::set_kdjointpose();
                 humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver);
                 centroid=kinematics_full::compute_centroid(state,0);
@@ -720,7 +688,6 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
 
     for (int idx = 2; idx < msg->poses.size(); idx++)
     {
-        // getting the position and orientation of the current pose
         double x = msg->poses[idx].pose.position.x,
                y = msg->poses[idx].pose.position.y,
                roll, pitch, yaw;
@@ -731,7 +698,7 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
         q.setW(msg->poses[idx].pose.orientation.w);
         tf::Matrix3x3 m(q);
         m.getRPY(roll, pitch, yaw);
-        // getting the frame_id of the current pose
+        
         char foot = msg->poses[idx].header.frame_id[0];
         char foot_stance;
         if (foot == 'r')

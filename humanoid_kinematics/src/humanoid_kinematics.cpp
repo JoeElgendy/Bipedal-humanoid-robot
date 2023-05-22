@@ -22,7 +22,7 @@ int main(int argc, char **argv)
         // else sub_path2 = *sharedPtr;
 
     ros::Subscriber sub_path = nh.subscribe<nav_msgs::Path>("humanoid/footstep_path", 100, boost::bind(get_path, _1, sampling, &rate, &humanoid, &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver));
-    double home[14] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
+    double home[15] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
     humanoid.set_jointpose(home);
     humanoid.set_T_jointpose(home);
 
