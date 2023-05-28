@@ -97,9 +97,10 @@ kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string
         std::cout << "Succeeded to construct kdl tree \n" ;
     }
     std::string root_link=humanoid_tree.getRootSegment()->first;
+
     std::vector<Chain> humanoid_chains;
     
-    KDL::Chain Right_Arm_Chain,Left_Arm_Chain,Right_Leg_Chain,Left_Leg_Chain;
+   // KDL::Chain Right_Arm_Chain,Left_Arm_Chain,Right_Leg_Chain,Left_Leg_Chain;
 
     if(!humanoid_tree.getChain(root_link,Right_Leg_End_Effector,Right_Leg_Chain)){
         std::cout << "Failed to construct Right Leg Chain \n" ;
@@ -134,6 +135,12 @@ kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string
         Right_Arm_jntarray=KDL::JntArray(Right_Arm_Chain.getNrOfJoints());
         Left_Arm_jntarray=KDL::JntArray(Left_Arm_Chain.getNrOfJoints());
     }
+    //std::cout<< "\n no of segments of Right_Arm " << Right_Arm_Chain.getNrOfSegments();
+    //std::cout<< "\n no of segments of Left_Arm " << Left_Arm_Chain.getNrOfSegments();
+    //std::cout<< "\n no of segments of Left_Leg " << Left_Leg_Chain.getNrOfSegments();
+    //std::cout<< "\n no of segments of Right_Leg " << Right_Leg_Chain.getNrOfSegments();
+
+
 }
 
 void kinematics_full::set_jointpose(double *jnt){
@@ -145,6 +152,8 @@ void kinematics_full::set_jointpose(double *jnt){
     Right_Thigh_Link=jnt[4];
     Right_Calf_Link=jnt[5];
     Right_Foot_Link=jnt[6];
+    //Right_Foot_Link=0-(jnt[4]+jnt[5]);
+
 
     Left_Upper_Shoulder_Link=jnt[7];
     Left_Mid_Shoulder_Link=jnt[8];
@@ -154,6 +163,7 @@ void kinematics_full::set_jointpose(double *jnt){
     Left_Thigh_Link=jnt[11];
     Left_Calf_Link=jnt[12];
     Left_Foot_Link=jnt[13];
+    //Left_Foot_Link=0-(jnt[11]+jnt[12]);
 }
 
 void kinematics_full::set_T_jointpose(double *jnt){
@@ -165,6 +175,7 @@ void kinematics_full::set_T_jointpose(double *jnt){
     T_Right_Thigh_Link=jnt[4];
     T_Right_Calf_Link=jnt[5];
     T_Right_Foot_Link=jnt[6];
+    //T_Right_Foot_Link=0-(jnt[4]+jnt[5]);
 
     T_Left_Upper_Shoulder_Link=jnt[7];
     T_Left_Mid_Shoulder_Link=jnt[8];
@@ -174,6 +185,7 @@ void kinematics_full::set_T_jointpose(double *jnt){
     T_Left_Thigh_Link=jnt[11];
     T_Left_Calf_Link=jnt[12];
     T_Left_Foot_Link=jnt[13];
+    //T_Left_Foot_Link=0-(jnt[11]+jnt[12]);
 }
 
 void kinematics_full::set_T_equal_jointpose(){
@@ -226,7 +238,7 @@ void kinematics_full::add_jointpose(double *jnt){
     Right_Hip_Link += *(jnt+3);
     Right_Thigh_Link += *(jnt+4);
     Right_Calf_Link += *(jnt+5);
-    Right_Foot_Link += *(jnt+6);
+    Right_Foot_Link += 0-(*(jnt+4)+jnt[5]);
 
     Left_Upper_Shoulder_Link +=*(jnt+7);
     Left_Mid_Shoulder_Link +=*(jnt+8);
@@ -235,7 +247,7 @@ void kinematics_full::add_jointpose(double *jnt){
     Left_Hip_Link += *(jnt+10);
     Left_Thigh_Link += *(jnt+11);
     Left_Calf_Link += *(jnt+12);
-    Left_Foot_Link += *(jnt+13);
+    Left_Foot_Link += 0-(*(jnt+11)+jnt[12]);
 }
 
 void kinematics_full::joint_publish(ros::Rate *r){
@@ -319,48 +331,52 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
     KDL::Vector link_cog;
     KDL::Vector link_cog_refbase;
     KDL::Vector link_temp;
-    for(int i=0;i<Right_Arm.getNrOfSegments();i++){
+    for(int i=0;i<Right_Arm_Chain.getNrOfSegments();i++){
         Right_Arm_fk_solver->JntToCart(Right_Arm_jntarray,Right_Lower_Shoulder,i);
         Right_Lower_Shoulder.M.GetRPY(r_roll,r_pitch,r_yaw);
         rot_inv=Right_Lower_Shoulder.M.Inverse();
-        link_cog=Right_Arm.getSegment(i).getInertia().getCOG();
+        link_cog=Right_Arm_Chain.getSegment(i).getInertia().getCOG();
         link_temp=rot_inv.operator*(Right_Lower_Shoulder.p);
         link_cog_refbase.data[0]=link_temp.data[0] + link_cog.data[0];
         link_cog_refbase.data[1]=link_temp.data[1] + link_cog.data[1];
         link_cog_refbase.data[2]=link_temp.data[2] + link_cog.data[2];
         link_cog_refbase.operator=(Right_Lower_Shoulder.M.operator*(link_cog_refbase));
-        r_CoM.x+=link_cog_refbase.data[0]*Right_Arm.getSegment(i).getInertia().getMass();
-        r_CoM.y+=link_cog_refbase.data[1]*Right_Arm.getSegment(i).getInertia().getMass();
-        r_CoM.z+=link_cog_refbase.data[2]*Right_Arm.getSegment(i).getInertia().getMass();
+        r_CoM.x+=link_cog_refbase.data[0]*Right_Arm_Chain.getSegment(i).getInertia().getMass();
+        r_CoM.y+=link_cog_refbase.data[1]*Right_Arm_Chain.getSegment(i).getInertia().getMass();
+        r_CoM.z+=link_cog_refbase.data[2]*Right_Arm_Chain.getSegment(i).getInertia().getMass();
+        r_CoM.mass=Right_Arm_Chain.getSegment(i).getInertia().getMass();
+       // std::cout << "Right Arm CoM x axis" << r_CoM.x << "\n Right arm CoM y Axis" << r_CoM.y << "\n";
     
     if(verbose){
                 std::cout << std::setprecision(5)<< i<<".) state ="
-                          <<" " <<Right_Arm.getSegment(i).getName()<<" mass =" << Right_Arm.getSegment(i).getInertia().getMass()
+                          <<" " <<Right_Arm_Chain.getSegment(i).getName()<<" mass =" << Right_Arm_Chain.getSegment(i).getInertia().getMass()
                           <<"     Rotation :" <<r_roll<< " " <<r_pitch<<" "<<r_yaw
                           << "    Mass Trans : " << r_CoM.x << "  " << r_CoM.y << "  " << r_CoM.z << ""
                           <<"     Translation main : "<<Right_Lower_Shoulder.p[0]<<" "<<Right_Lower_Shoulder.p[1]<<" "<<Right_Lower_Shoulder.p[2]<<"\n";
 
             }
-    humanoid_CoM.x=r_CoM.x/r_CoM.mass;
-    humanoid_CoM.y=r_CoM.y/r_CoM.mass;
+    humanoid_CoM.x+=r_CoM.x/r_CoM.mass;
+    humanoid_CoM.y+=r_CoM.y/r_CoM.mass;
     }
-    for(int i=0;i<Left_Arm.getNrOfSegments();i++){
+    std::cout << "Right Arm CoM x axis" << humanoid_CoM.x << "\n Right arm CoM y Axis" << humanoid_CoM.y << "\n";
+
+    for(int i=0;i<Left_Arm_Chain.getNrOfSegments();i++){
         Left_Arm_fk_solver->JntToCart(Left_Arm_jntarray,Left_Lower_Shoulder,i);
         Left_Lower_Shoulder.M.GetRPY(r_roll,r_pitch,r_yaw);
         rot_inv=Left_Lower_Shoulder.M.Inverse();
-        link_cog=Left_Arm.getSegment(i).getInertia().getCOG();
+        link_cog=Left_Arm_Chain.getSegment(i).getInertia().getCOG();
         link_temp=rot_inv.operator*(Left_Lower_Shoulder.p);
         link_cog_refbase.data[0]=link_temp.data[0] + link_cog.data[0];
         link_cog_refbase.data[1]=link_temp.data[1] + link_cog.data[1];
         link_cog_refbase.data[2]=link_temp.data[2] + link_cog.data[2];
         link_cog_refbase.operator=(Left_Lower_Shoulder.M.operator*(link_cog_refbase));
-        l_CoM.x+=link_cog_refbase.data[0]*Left_Arm.getSegment(i).getInertia().getMass();
-        l_CoM.y+=link_cog_refbase.data[1]*Left_Arm.getSegment(i).getInertia().getMass();
-        l_CoM.z+=link_cog_refbase.data[2]*Left_Arm.getSegment(i).getInertia().getMass();
-    
+        l_CoM.x+=link_cog_refbase.data[0]*Left_Arm_Chain.getSegment(i).getInertia().getMass();
+        l_CoM.y+=link_cog_refbase.data[1]*Left_Arm_Chain.getSegment(i).getInertia().getMass();
+        l_CoM.z+=link_cog_refbase.data[2]*Left_Arm_Chain.getSegment(i).getInertia().getMass();
+        l_CoM.mass += Left_Arm_Chain.getSegment(i).getInertia().getMass();
     if(verbose){
                         std::cout << std::setprecision(5)<< i<<".) state ="
-                          <<" " <<Left_Arm.getSegment(i).getName()<<" mass =" << Left_Arm.getSegment(i).getInertia().getMass()
+                          <<" " <<Left_Arm_Chain.getSegment(i).getName()<<" mass =" << Left_Arm_Chain.getSegment(i).getInertia().getMass()
                           <<"     Rotation :" <<l_roll<< " " <<l_pitch<<" "<<l_yaw
                           << "    Mass Trans : " << l_CoM.x << "  " << l_CoM.y << "  " << l_CoM.z << ""
                           <<"     Translation main : "<<Left_Lower_Shoulder.p[0]<<" "<<Left_Lower_Shoulder.p[1]<<" "<<Left_Lower_Shoulder.p[2]<<"\n";
@@ -368,25 +384,27 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
     humanoid_CoM.x+=l_CoM.x/l_CoM.mass;
     humanoid_CoM.y+=l_CoM.y/l_CoM.mass;
     }
+        std::cout << "Left & Right Arm CoM x axis" << humanoid_CoM.x << "\n Left  Right arm CoM y Axis" << humanoid_CoM.y << "\n";
+
             if (state == 'r' || state == 'd')
         {
-            for (int i = 0; i < Right_Leg.getNrOfSegments(); i++)
+            for (int i = 1; i < Right_Leg_Chain.getNrOfSegments(); i++)
             {
                 Right_Leg_fk_solver->JntToCart(Right_Leg_jntarray, Left_Foot, i + 1); 
                 double r_roll, r_pitch, r_yaw;
                 Left_Foot.M.GetRPY(r_roll, r_pitch, r_yaw);
                 KDL::Rotation rot_inv = Left_Foot.M.Inverse();                       
-                KDL::Vector link_cog = Right_Leg.getSegment(i).getInertia().getCOG(); 
+                KDL::Vector link_cog = Right_Leg_Chain.getSegment(i).getInertia().getCOG(); 
                 KDL::Vector link_cog_refbase;                                     
                 KDL::Vector link_temp = rot_inv.operator*(Left_Foot.p);
                 link_cog_refbase.data[0] = link_temp.data[0] + link_cog.data[0];
                 link_cog_refbase.data[1] = link_temp.data[1] + link_cog.data[1];
                 link_cog_refbase.data[2] = link_temp.data[2] + link_cog.data[2];
                 link_cog_refbase.operator=(Left_Foot.M.operator*(link_cog_refbase));
-                r_CoM.x += link_cog_refbase.data[0] * Right_Leg.getSegment(i).getInertia().getMass();
-                r_CoM.y += link_cog_refbase.data[1] * Right_Leg.getSegment(i).getInertia().getMass();
-                r_CoM.z += link_cog_refbase.data[2] * Right_Leg.getSegment(i).getInertia().getMass();
-
+                r_CoM.x += link_cog_refbase.data[0] * Right_Leg_Chain.getSegment(i).getInertia().getMass();
+                r_CoM.y += link_cog_refbase.data[1] * Right_Leg_Chain.getSegment(i).getInertia().getMass();
+                r_CoM.z += link_cog_refbase.data[2] * Right_Leg_Chain.getSegment(i).getInertia().getMass();
+                r_CoM.mass += Right_Leg_Chain.getSegment(i).getInertia().getMass();
                 if (i == 4)
                 {
                     base_roll = r_roll;
@@ -396,7 +414,7 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
                 if (verbose)
                 {
                     std::cout << std::setprecision(5) << i << ".) state = "
-                              << "  " << Right_Leg.getSegment(i).getName() << " mass = " << Right_Leg.getSegment(i).getInertia().getMass()
+                              << "  " << Right_Leg_Chain.getSegment(i).getName() << " mass = " << Right_Leg_Chain.getSegment(i).getInertia().getMass()
                               << "        Rotation : " << r_roll << "  " << r_pitch << "  " << r_yaw
                               << "           Mass Trans : " << r_CoM.x << "  " << r_CoM.y << "  " << r_CoM.z << ""
                               << "       Translation main : " << Left_Foot.p[0] << "  " << Left_Foot.p[1] << "  " << Left_Foot.p[2] << "\n";
@@ -405,31 +423,33 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
                 humanoid_CoM.y += r_CoM.y / r_CoM.mass;
             }
         }
+         std::cout << "right leg + whole CoM x axis" << humanoid_CoM.x << "\n right leg + whole CoM y Axis" << humanoid_CoM.y << "\n";
+       
         if (state == 'l')
         {
-            for (int i = 0; i < Left_Leg.getNrOfSegments(); i++)
+            for (int i = 1; i < Left_Leg_Chain.getNrOfSegments(); i++)
             {
                 Left_Leg_fk_solver->JntToCart(Left_Leg_jntarray, Right_Foot, i + 1);
                 double l_roll, l_pitch, l_yaw;
                 Right_Foot.M.GetRPY(l_roll, l_pitch, l_yaw);
 
                 KDL::Rotation rot_inv = Right_Foot.M.Inverse();
-                KDL::Vector link_cog = Left_Leg.getSegment(i).getInertia().getCOG();
+                KDL::Vector link_cog = Left_Leg_Chain.getSegment(i).getInertia().getCOG();
                 KDL::Vector link_cog_refbase;
                 KDL::Vector link_temp = rot_inv.operator*(Right_Foot.p);
                 link_cog_refbase.data[0] = link_temp.data[0] + link_cog.data[0];
                 link_cog_refbase.data[1] = link_temp.data[1] + link_cog.data[1];
                 link_cog_refbase.data[2] = link_temp.data[2] + link_cog.data[2];
                 link_cog_refbase.operator=(Right_Foot.M.operator*(link_cog_refbase));
-                l_CoM.x += link_cog_refbase.data[0] * Left_Leg.getSegment(i).getInertia().getMass();
-                l_CoM.y += link_cog_refbase.data[1] * Left_Leg.getSegment(i).getInertia().getMass();
-                l_CoM.z += link_cog_refbase.data[2] * Left_Leg.getSegment(i).getInertia().getMass();
-                l_CoM.mass += Left_Leg.getSegment(i).getInertia().getMass();
+                l_CoM.x += link_cog_refbase.data[0] * Left_Leg_Chain.getSegment(i).getInertia().getMass();
+                l_CoM.y += link_cog_refbase.data[1] * Left_Leg_Chain.getSegment(i).getInertia().getMass();
+                l_CoM.z += link_cog_refbase.data[2] * Left_Leg_Chain.getSegment(i).getInertia().getMass();
+                l_CoM.mass += Left_Leg_Chain.getSegment(i).getInertia().getMass();
                 if (verbose)
                 {
                     std::cout
                         << std::setprecision(5) << i << ".) state = "
-                        << "  " << Left_Leg.getSegment(i).getName() << " mass = " << Left_Leg.getSegment(i).getInertia().getMass()
+                        << "  " << Left_Leg_Chain.getSegment(i).getName() << " mass = " << Left_Leg_Chain.getSegment(i).getInertia().getMass()
                         << "        Rotation : " << l_roll << "  " << l_pitch << "  " << l_yaw
                         << "           Mass Trans : " << l_CoM.x << "  " << l_CoM.y << "  " << l_CoM.z << ""
                         << "       Translation main : " << Right_Foot.p[0] << "  " << Right_Foot.p[1] << "  " << Right_Foot.p[2] << "\n";
@@ -438,6 +458,8 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
                 humanoid_CoM.y += l_CoM.y / l_CoM.mass;
             }
         }
+               std::cout << "Whole CoM x axis" << humanoid_CoM.x << "\n Whole CoM y Axis" << humanoid_CoM.y << "\n";
+
         return humanoid_CoM;
 }
 
@@ -455,7 +477,7 @@ point_mass kinematics_full::compute_centroid(char state,bool verbose){
             centroid.z = Left_Foot.p.data[2] / 2.0;
         }
         centroid.state = state;
-        if (verbose)
+        if (true)
         {
             std::cout << centroid.state << "centroid :(" << centroid.x << "," << centroid.y << "," << centroid.z << ")\n"
                       << std::endl;
@@ -527,7 +549,7 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
             for(int k=0 ; k<freq ; k++){
                 kinematics_full::add_jointpose(jntstate);
                 kinematics_full::set_kdjointpose();
-                humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver);
+                humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,0);
                 centroid=kinematics_full::compute_centroid(state,0);
                 humanoid_stability=kinematics_full::quick_is_stable(0);
                 stable=humanoid_stability.check();
@@ -551,25 +573,29 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
                 if (D_y > D_limit) D_y = D_limit; else if (D_y < -D_limit) D_y = -D_limit;
 
                 if(state == 'r'){
-                    Right_Hip_Link += (P_y + I_y + D_y);
-                    Right_Thigh_Link +=(P_x + I_x + D_x);
+                    Right_Thigh_Link += (P_y + I_y + D_y);
+                    Right_Calf_Link +=(P_x + I_x + D_x);
                     if(Left_Foot.p.data[1]<0.16){
-                        Left_Hip_Link += kp /3 * (Right_Foot.p.data[1]+0.16);
+                        Left_Calf_Link -= kp /3 * (Right_Foot.p.data[1]+0.16);
                     }
                     
                 }
                 else if(state == 'l'){
-                    Left_Hip_Link += (P_y + I_y + D_y);
-                    Left_Thigh_Link +=(P_x + I_x + D_x);
+                    Left_Thigh_Link += (P_y + I_y + D_y);
+                    Left_Calf_Link +=(P_x + I_x + D_x);
                     if(Right_Foot.p.data[1]>-0.16){
-                        Right_Hip_Link += kp /3 * (Left_Foot.p.data[1]+0.16);
+                        Right_Calf_Link += kp /3 * (Left_Foot.p.data[1]+0.16);
                     }
                 }
                 else if(state == 'd'){
-                    Right_Hip_Link   += (P_y + I_y + D_y);
-                    Right_Thigh_Link -= (P_x + I_x + D_x);
-                    Left_Hip_Link    += (P_y + I_y + D_y);
-                    Left_Thigh_Link  -= (P_x + I_x + D_x);
+                    Right_Hip_Link   -= (P_y + I_y + D_y);
+                    Right_Thigh_Link += (P_x + I_x + D_x);
+                    //Right_Calf_Link   +=(P_x + I_x + D_x);
+                    //Right_Thigh_Link +=(P_x + I_x + D_x);
+                    Left_Hip_Link   -= (P_y + I_y + D_y);
+
+                    //Left_Calf_Link    += (P_x + I_x + D_x);
+                    Left_Thigh_Link  += (P_x + I_x + D_x);
                 }
                 kinematics_full::joint_publish(rate);
                 kinematics_full::com_publish(state,rate);          
@@ -617,7 +643,7 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 Right_Foot_Link = 0 - (Right_Thigh_Link + Right_Calf_Link);
                 Left_Foot_Link  = 0 - (Left_Thigh_Link + Left_Calf_Link);
                 kinematics_full::set_kdjointpose();
-                humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver);
+                humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,0);
                 centroid=kinematics_full::compute_centroid(state,0);
                 humanoid_stability=kinematics_full::quick_is_stable(0);
                 stable=humanoid_stability.check();
@@ -644,14 +670,14 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 te_x = Left_Foot.p.data[0] - target[0];
                 te_y = Left_Foot.p.data[1] - target[1];
                 te_z = Left_Foot.p.data[2] - target[2];
-                Right_Hip_Link += (P_y + I_y + D_y);
-                Right_Thigh_Link -= (P_x + I_x + D_x);
+                //Right_Hip_Link += (P_y + I_y + D_y);
+                Right_Thigh_Link += (P_x + I_x + D_x);
 
                 if (Left_Foot.p.data[1] < 0.16)
                 {
-                    Left_Hip_Link += kp / 3 * (0.16 - Left_Foot.p.data[1]);
+                    // += kp / 3 * (0.16 - Left_Foot.p.data[1]);
                 }
-                Left_Hip_Link -= kp * te_y;
+                //Left_Hip_Link -= kp * te_y;
                 Left_Thigh_Link += kp * te_x;
                 Left_Calf_Link -= kp * te_z;
             }
@@ -660,22 +686,22 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 te_x = Right_Foot.p.data[0] - target[0];
                 te_y = Right_Foot.p.data[1] - target[1];
                 te_z = Right_Foot.p.data[2] - target[2];
-                Left_Hip_Link += (P_y + I_y + D_y);
-                Left_Thigh_Link -= (P_x + I_x + D_x);
+                //Left_Hip_Link += (P_y + I_y + D_y);
+                Left_Thigh_Link += (P_x + I_x + D_x);
                 if (Right_Foot.p.data[1] > -0.16)
                 {
-                    Right_Hip_Link += kp / 3 * (-0.16 - Right_Foot.p.data[1]);
+                    //Right_Hip_Link += kp / 3 * (-0.16 - Right_Foot.p.data[1]);
                 }
-                Right_Hip_Link -= kp * te_y;
+                //Right_Hip_Link -= kp * te_y;
                 Right_Thigh_Link += kp * te_x;
-                Right_Calf_Link -= kp * te_z;
+                Right_Calf_Link += kp * te_z;
             }
             else if (state == 'd')
             {
-                Right_Hip_Link += (P_y + I_y + D_y);
-                Right_Thigh_Link -= (P_x + I_x + D_x);
-                Left_Hip_Link += (P_y + I_y + D_y);
-                Left_Thigh_Link -= (P_x + I_x + D_x);
+                Right_Thigh_Link += (P_y + I_y + D_y);
+                Right_Calf_Link += (P_x + I_x + D_x);
+                Left_Thigh_Link += (P_y + I_y + D_y);
+                Left_Calf_Link -= (P_x + I_x + D_x);
                 }
             kinematics_full::joint_publish(rate);
             kinematics_full::com_publish(state,rate);
@@ -713,35 +739,33 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
         humanoid->humanoid_will_go_on(foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling * 1.5);
         if (foot_stance == 'r')
         {
-            humanoid->T_Right_Thigh_Link = -0.3;
-            humanoid->T_Right_Calf_Link = 0.55;
+            humanoid->T_Right_Thigh_Link = 0.25;
+            humanoid->T_Right_Calf_Link = 0.25;
 
-            humanoid->T_Left_Thigh_Link = -0.2;
-            humanoid->T_Left_Calf_Link = 0.5;
+            humanoid->T_Left_Thigh_Link = 0.25;
+            humanoid->T_Left_Calf_Link = -0.25;
 
-            humanoid->T_Left_Hip_Link = yaw;
-            humanoid->T_Right_Hip_Link = 0;
         }
         else if (foot_stance == 'l')
         {
-            humanoid->T_Left_Thigh_Link = -0.3;
-            humanoid->T_Left_Calf_Link = 0.55;
+            humanoid->T_Left_Thigh_Link = 0.25;
+            humanoid->T_Left_Calf_Link = -0.25;
 
-            humanoid->T_Right_Thigh_Link = -0.2;
-            humanoid->T_Right_Calf_Link = 0.5;
+            humanoid->T_Right_Thigh_Link = 0.25;
+            humanoid->T_Right_Calf_Link = 0.25;
 
-            humanoid->T_Right_Hip_Link = yaw;
-            humanoid->T_Left_Hip_Link = 0;
+            
+            
         }
         humanoid->humanoid_will_go_on(foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling);
         double tfoot[3] = {x, y, 0.0};
         humanoid->move_leg(tfoot, foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling * 2);
         humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling);
     }
-    humanoid->T_Right_Thigh_Link = -0.3;
-    humanoid->T_Right_Calf_Link = 0.55;
-    humanoid->T_Left_Thigh_Link = -0.3;
-    humanoid->T_Left_Calf_Link = 0.55;
+    humanoid->T_Right_Thigh_Link = 0.25;
+    humanoid->T_Right_Calf_Link = 0.25;
+    humanoid->T_Left_Thigh_Link = 0.25;
+    humanoid->T_Left_Calf_Link = -0.25;
     humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver,Left_Leg_fk_solver, Right_Arm_fk_solver,Left_Arm_fk_solver,rate, 100);
     std::cout << "Finish! \n";
 }

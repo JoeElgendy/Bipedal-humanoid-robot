@@ -154,10 +154,10 @@ class kinematics_full{
     public:
         bool gazebo;
         bool real;
-        KDL::Chain Right_Leg;
-        KDL::Chain Left_Leg;
-        KDL::Chain Right_Arm;
-        KDL::Chain Left_Arm;
+        KDL::Chain Right_Leg_Chain;
+        KDL::Chain Left_Leg_Chain;
+        KDL::Chain Right_Arm_Chain;
+        KDL::Chain Left_Arm_Chain;
 
         KDL::Frame Right_Foot;
         KDL::Frame Left_Foot;
