@@ -742,7 +742,7 @@
   </link>
 
 <!-- Right_Foot_Joint -->
-  <joint name="Right_Foot_Joint" type="revolute">
+  <joint name="Right_Foot_Joint" type="fixed">
     <origin xyz="0 0 -0.14763" rpy="0 0 0" />
     <parent link="Right_Calf_Link" />
     <child link="Right_Foot_Link" />
@@ -751,7 +751,7 @@
   </joint>
 
 <!-- Right_Foot_Joint_transmission -->
-  <transmission name="Right_Foot_Joint_transmission">
+ <!-- <transmission name="Right_Foot_Joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="Right_Foot_Joint">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
@@ -760,7 +760,8 @@
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> --> 
+
 <!-- Left Hip Link -->
   <link name="Left_Hip_Link">
     <inertial>
@@ -936,7 +937,7 @@
   </link>
 
 <!-- Left_foot_Joint -->
-  <joint name="Left_foot_Joint" type="revolute">
+  <joint name="Left_foot_Joint" type="fixed">
     <origin xyz="0 0 -0.14763" rpy="0 0 0" />
     <parent link="Left_Calf_Link" />
     <child link="Left_foot_Link" />
@@ -945,7 +946,7 @@
   </joint>
 
 <!-- Left_foot_Joint_transmission -->
- <transmission name="Left_foot_Joint_transmission">
+ <!-- <transmission name="Left_foot_Joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="Left_foot_Joint">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
@@ -954,7 +955,7 @@
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> -->
 
 <!-- Head Horizontal -->
   <link name="Head_Horizontal_Link">
