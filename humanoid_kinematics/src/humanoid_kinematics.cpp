@@ -13,7 +13,6 @@ int main(int argc, char **argv)
     KDL::ChainFkSolverPos_recursive Left_Leg_fk_solver(humanoid.Left_Leg_Chain);
     KDL::ChainFkSolverPos_recursive Right_Arm_fk_solver(humanoid.Right_Arm_Chain);
     KDL::ChainFkSolverPos_recursive Left_Arm_fk_solver(humanoid.Left_Arm_Chain);
-
     nav_msgs::Path ptest;
     int sampling = 200;
         // boost::shared_ptr<nav_msgs::Path const> sharedPtr;

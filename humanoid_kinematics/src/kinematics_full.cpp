@@ -97,6 +97,7 @@ kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string
         std::cout << "Succeeded to construct kdl tree \n" ;
     }
     std::string root_link=humanoid_tree.getRootSegment()->first;
+
     std::vector<Chain> humanoid_chains;
     
     if(!humanoid_tree.getChain(root_link,Right_Leg_End_Effector,Right_Leg_Chain)){
@@ -134,6 +135,12 @@ kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string
         Left_Arm_jntarray=KDL::JntArray(Left_Arm_Chain.getNrOfJoints());
 
     }
+    //std::cout<< "\n no of segments of Right_Arm " << Right_Arm_Chain.getNrOfSegments();
+    //std::cout<< "\n no of segments of Left_Arm " << Left_Arm_Chain.getNrOfSegments();
+    //std::cout<< "\n no of segments of Left_Leg " << Left_Leg_Chain.getNrOfSegments();
+    //std::cout<< "\n no of segments of Right_Leg " << Right_Leg_Chain.getNrOfSegments();
+
+
 }
 
 void kinematics_full::set_jointpose(double *jnt){
@@ -145,6 +152,8 @@ void kinematics_full::set_jointpose(double *jnt){
     Right_Thigh_Link=jnt[4];
     Right_Calf_Link=jnt[5];
     Right_Foot_Link=jnt[6];
+    //Right_Foot_Link=0-(jnt[4]+jnt[5]);
+
 
     Left_Upper_Shoulder_Link=jnt[7];
     Left_Mid_Shoulder_Link=jnt[8];
@@ -154,6 +163,7 @@ void kinematics_full::set_jointpose(double *jnt){
     Left_Thigh_Link=jnt[11];
     Left_Calf_Link=jnt[12];
     Left_Foot_Link=jnt[13];
+    //Left_Foot_Link=0-(jnt[11]+jnt[12]);
 }
 
 void kinematics_full::set_T_jointpose(double *jnt){
@@ -165,6 +175,7 @@ void kinematics_full::set_T_jointpose(double *jnt){
     T_Right_Thigh_Link=jnt[4];
     T_Right_Calf_Link=jnt[5];
     T_Right_Foot_Link=jnt[6];
+    //T_Right_Foot_Link=0-(jnt[4]+jnt[5]);
 
     T_Left_Upper_Shoulder_Link=jnt[7];
     T_Left_Mid_Shoulder_Link=jnt[8];
@@ -174,6 +185,7 @@ void kinematics_full::set_T_jointpose(double *jnt){
     T_Left_Thigh_Link=jnt[11];
     T_Left_Calf_Link=jnt[12];
     T_Left_Foot_Link=jnt[13];
+    //T_Left_Foot_Link=0-(jnt[11]+jnt[12]);
 }
 
 void kinematics_full::set_T_equal_jointpose(){
@@ -404,7 +416,6 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
                               << "       Translation main : " << Left_Foot.p[0] << "  " << Left_Foot.p[1] << "  " << Left_Foot.p[2] << "\n";
                 }
             }
-
             for (int i = 1; i < Left_Leg_Chain.getNrOfSegments(); i++)
             {
                 Left_Leg_fk_solver->JntToCart(Left_Leg_jntarray, Left_Foot, i + 1);
@@ -465,7 +476,7 @@ point_mass kinematics_full::compute_centroid(char state,bool verbose){
             std::cout << "\n ana double yala = " << centroid.x <<std::endl;
         }
         centroid.state = state;
-        if (verbose)
+        if (true)
         {
             std::cout << centroid.state << "centroid :(" << centroid.x << "," << centroid.y << "," << centroid.z << ")\n"
                       << std::endl;
@@ -572,8 +583,8 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
                     
                 }
                 else if(state == 'l'){
-                    Left_Hip_Link += (P_y + I_y + D_y);
-                    Left_Thigh_Link +=(P_x + I_x + D_x);
+                    Left_Thigh_Link += (P_y + I_y + D_y);
+                    Left_Calf_Link +=(P_x + I_x + D_x);
                     if(Right_Foot.p.data[1]>-0.16){
                         Right_Calf_Link += kp /3 * (Left_Foot.p.data[1]+0.16);
                     }
@@ -630,7 +641,7 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 Right_Foot_Link = 0 - (Right_Thigh_Link + Right_Calf_Link);
                 Left_Foot_Link  = 0 - (Left_Thigh_Link + Left_Calf_Link);
                 kinematics_full::set_kdjointpose();
-                humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver);
+                humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,0);
                 centroid=kinematics_full::compute_centroid(state,0);
                 humanoid_stability=kinematics_full::quick_is_stable(0);
                 stable=humanoid_stability.check();
@@ -662,7 +673,7 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
 
                 if (Left_Foot.p.data[1] < 0.16)
                 {
-                    Left_Hip_Link += kp / 3 * (0.16 - Left_Foot.p.data[1]);
+                    // += kp / 3 * (0.16 - Left_Foot.p.data[1]);
                 }
                 //Left_Hip_Link -= kp * te_y;
                 Left_Thigh_Link += kp * te_x;
@@ -677,11 +688,11 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 Left_Thigh_Link -= (P_x + I_x + D_x);
                 if (Right_Foot.p.data[1] > -0.16)
                 {
-                    Right_Hip_Link += kp / 3 * (-0.16 - Right_Foot.p.data[1]);
+                    //Right_Hip_Link += kp / 3 * (-0.16 - Right_Foot.p.data[1]);
                 }
                 // Right_Hip_Link -= kp * te_y;
                 Right_Thigh_Link += kp * te_x;
-                Right_Calf_Link -= kp * te_z;
+                Right_Calf_Link += kp * te_z;
             }
             else if (state == 'd')
             {
@@ -738,8 +749,6 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
             humanoid->T_Left_Thigh_Link = 0.25;
             humanoid->T_Left_Calf_Link = -0.25;
 
-            humanoid->T_Left_Hip_Link = yaw;
-            humanoid->T_Right_Hip_Link = 0;
         }
         else if (foot_stance == 'l')
         {
@@ -749,18 +758,18 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
             humanoid->T_Right_Thigh_Link = 0.25;
             humanoid->T_Right_Calf_Link = 0.25;
 
-            humanoid->T_Right_Hip_Link = yaw;
-            humanoid->T_Left_Hip_Link = 0;
+            
+            
         }
         humanoid->humanoid_will_go_on(foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling);
         double tfoot[3] = {x, y, 0.0};
         humanoid->move_leg(tfoot, foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling * 2);
         humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling);
     }
-    humanoid->T_Right_Thigh_Link = -0.3;
-    humanoid->T_Right_Calf_Link = 0.55;
-    humanoid->T_Left_Thigh_Link = -0.3;
-    humanoid->T_Left_Calf_Link = 0.55;
+    humanoid->T_Right_Thigh_Link = 0.25;
+    humanoid->T_Right_Calf_Link = 0.25;
+    humanoid->T_Left_Thigh_Link = 0.25;
+    humanoid->T_Left_Calf_Link = -0.25;
     humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver,Left_Leg_fk_solver, Right_Arm_fk_solver,Left_Arm_fk_solver,rate, 100);
     std::cout << "Finish! \n";
 }

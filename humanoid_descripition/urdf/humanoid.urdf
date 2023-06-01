@@ -743,6 +743,7 @@
 
 <!-- Right_Foot_Joint -->
   <joint name="Right_Foot_Joint" type="fixed">
+  <joint name="Right_Foot_Joint" type="fixed">
     <origin xyz="0 0 -0.14763" rpy="0 0 0" />
     <parent link="Right_Calf_Link" />
     <child link="Right_Foot_Link" />
@@ -750,6 +751,8 @@
     <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
   </joint>
 
+<!-- Right_Foot_Joint_transmission  
+  <transmission name="Right_Foot_Joint_transmission">
 <!-- Right_Foot_Joint_transmission -->
  <!-- <transmission name="Right_Foot_Joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
@@ -945,6 +948,8 @@
     <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
   </joint>
 
+<!-- Left_foot_Joint_transmission 
+ <transmission name="Left_foot_Joint_transmission">
 <!-- Left_foot_Joint_transmission -->
  <!-- <transmission name="Left_foot_Joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
