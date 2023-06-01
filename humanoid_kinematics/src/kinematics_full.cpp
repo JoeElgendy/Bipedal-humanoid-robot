@@ -583,6 +583,8 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
                   //  Right_Thigh_Link += (P_x + I_x + D_x);
                   //  Left_Hip_Link    -= (P_y + I_y + D_y);
                   //  Left_Thigh_Link  += (P_x + I_x + D_x);
+                  Left_Foot_Link = 0;
+                  Right_Foot_Link =0;
                 }
                 kinematics_full::joint_publish(rate);
                 kinematics_full::com_publish(state,rate);          
