@@ -416,10 +416,12 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
                 humanoid_CoM.x += r_CoM.x / r_CoM.mass;
                 humanoid_CoM.y += r_CoM.y / r_CoM.mass;
             }
-
-            for (int i = 1; i < Left_Leg_Chain.getNrOfSegments(); i++)
+        }
+        if (state == 'l')
+        {
+            for (int i = 0; i < Left_Leg.getNrOfSegments(); i++)
             {
-                Left_Leg_fk_solver->JntToCart(Left_Leg_jntarray, Left_Foot, i + 1);
+                Left_Leg_fk_solver->JntToCart(Left_Leg_jntarray, Right_Foot, i + 1);
                 double l_roll, l_pitch, l_yaw;
                 Right_Foot.M.GetRPY(l_roll, l_pitch, l_yaw);
 
