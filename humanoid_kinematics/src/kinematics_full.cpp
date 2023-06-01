@@ -685,10 +685,10 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
             }
             else if (state == 'd')
             {
-              //  Right_Hip_Link   += (P_y + I_y + D_y);
-              //Right_Thigh_Link += (P_x + I_x + D_x);
-              //  Left_Hip_Link    += (P_y + I_y + D_y);
-               // Left_Thigh_Link  -= (P_x + I_x + D_x);
+                Right_Hip_Link   += (P_y + I_y + D_y);
+                Right_Thigh_Link += (P_x + I_x + D_x);
+                Left_Hip_Link    += (P_y + I_y + D_y);
+                Left_Thigh_Link  -= (P_x + I_x + D_x);
 
                // hany down :
                // Right_Thigh_Link += (P_y + I_y + D_y);
