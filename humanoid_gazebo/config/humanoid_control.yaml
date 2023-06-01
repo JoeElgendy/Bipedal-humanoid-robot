@@ -22,10 +22,10 @@ humanoid:
     joint: Right_Calf_Joint
     pid: {p: 200.0, i: 2.0, d: 0.0}
 
-#  Right_Foot_Joint_position:
-#    type: effort_controllers/JointPositionController
-#    joint: Right_Foot_Joint
-#    pid: {p: 200.0, i: 2.0, d: 0.0}
+  Right_Foot_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Right_Foot_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
 
 # Left Leg -----
 
@@ -44,14 +44,10 @@ humanoid:
     joint: Left_Calf_Joint
     pid: {p: 200.0, i: 2.0, d: 0.0}
 
-#  Left_foot_Joint_position:
-#    type: effort_controllers/JointPositionController
-#    joint: Left_foot_Joint
-#    pid: {p: 200.0, i: 2.0, d: 0.0}
-#   Left_foot_Joint_position: 
-#    type: effort_controllers/JointPositionController
-#    joint: Left_foot_Joint
-#    pid: {p: 200.0, i: 2.0, d: 0.0}
+  Left_foot_Joint_position:
+    type: effort_controllers/JointPositionController
+    joint: Left_foot_Joint
+    pid: {p: 200.0, i: 2.0, d: 0.0}
 
 # Head -----
 
