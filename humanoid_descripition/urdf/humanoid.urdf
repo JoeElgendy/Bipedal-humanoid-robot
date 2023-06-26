@@ -697,7 +697,7 @@
     <origin xyz="0.002 -0.002 -0.12045" rpy="0 0 0" />
     <parent link="Right_Thigh_Link" />
     <child link="Right_Calf_Link" />
-    <axis xyz="0 -1 0" />
+    <axis xyz="0 1 0" />
     <limit lower="-3.14" upper="3.14" effort="6" velocity="6.59" />
   </joint>
 
@@ -993,7 +993,7 @@
     <parent link="base_link" />
     <child link="Head_Horizontal_Link" />
     <axis xyz="0 0 1" />
-    <limit lower="-3.14" upper="3.14" effort="1.078" velocity="6.159" />
+    <limit lower="-3.14" upper="3.14" effort="6" velocity="6.159" />
   </joint>
 
 <!-- Head_Horizontal_transmission -->
