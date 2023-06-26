@@ -16,23 +16,21 @@ int main(int argc, char **argv)
 
     nav_msgs::Path ptest;
     int sampling = 200;
-        // boost::shared_ptr<nav_msgs::Path const> sharedPtr;
-        // nav_msgs::Path sub_path2;
-        // sharedPtr  = ros::topic::waitForMessage<nav_msgs::Path>("humanoid/footstep_path", ros::Duration(10));
-        // if (sharedPtr == NULL) ROS_INFO("NO path received");
-        // else sub_path2 = *sharedPtr;
-
     ros::Subscriber sub_path = nh.subscribe<nav_msgs::Path>("humanoid/footstep_path", 100, boost::bind(get_path, _1, sampling, &rate, &humanoid, &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver));
     double home[15] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0};
     humanoid.set_jointpose(home);
     humanoid.set_T_jointpose(home);
     //humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver,&rate, 70);
-    //twas
-    humanoid.T_Right_Thigh_Link = 0.25;
-    humanoid.T_Right_Calf_Link  = 0.25;
-    humanoid.T_Left_Thigh_Link  = 0.25;
-    humanoid.T_Left_Calf_Link   = -0.25;
-    humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver,&rate, 70);
+    // Right Calf ma2loba !!!!!
+    humanoid.T_Right_Thigh_Link = 0.14;
+    humanoid.T_Right_Calf_Link  = 0.24;
+    humanoid.T_Right_Foot_Link  = 0.0;
+
+    humanoid.T_Left_Thigh_Link  = 0.14;
+    humanoid.T_Left_Calf_Link   = -0.24;
+    humanoid.T_Left_Foot_Link   = 0.0;
+
+    humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver,&rate, 100);
 
     std::cout << "finished 2\n joe \n ";
 
