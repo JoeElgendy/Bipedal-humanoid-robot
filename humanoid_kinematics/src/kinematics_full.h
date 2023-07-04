@@ -35,6 +35,13 @@
 #define foot_x_size2 -0.04
 #define foot_y_size 0.018
 #define foot_y_size2 -0.018
+#define Right_Thigh_Limit 0.14
+#define Right_Calf_Limit 0.24
+#define Right_Foot_Limit 0.1
+#define Left_Thigh_Limit 0.14
+#define Left_Calf_Limit 0.24
+#define Left_Foot_Limit 0.1
+
 
 using namespace KDL;
 class point_mass
@@ -230,7 +237,8 @@ class kinematics_full{
         point_mass compute_com(char state,KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver, bool verbose );
         point_mass compute_centroid(char state,bool verbose );
         stability quick_is_stable(bool verbose );
-        bool humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver,ros::Rate *rate , int freq);
+        void calculate_values(char state, double *Right_Thigh_Link, double *Right_Calf_Link, double *Left_Thigh_Link, double *Left_Calf_Link, double *Right_Foot_Link, double *Left_Foot_Link,double *Right_Upper_Shoulder_Link,double *Left_Upper_Shoulder_Link);
+        bool humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver, ros::Rate *rate, int freq);
         bool move_leg(double *target, char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver,ros::Rate *rate, int freq );
 };
 void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate, kinematics_full *humanoid, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver);
