@@ -21,12 +21,12 @@ int main(int argc, char **argv)
     humanoid.set_jointpose(home);
     humanoid.set_T_jointpose(home);
     //humanoid.humanoid_will_go_on('d', &Right_Leg_fk_solver, &Left_Leg_fk_solver,&Right_Arm_fk_solver,&Left_Arm_fk_solver,&rate, 70);
-    // Right Calf ma2loba !!!!!
-    humanoid.T_Right_Thigh_Link = 0.14;
-    humanoid.T_Right_Calf_Link  = 0.24;
+    //
+    humanoid.T_Right_Thigh_Link = 0.16;
+    humanoid.T_Right_Calf_Link  = -0.24;
     humanoid.T_Right_Foot_Link  = 0.0;
 
-    humanoid.T_Left_Thigh_Link  = 0.14;
+    humanoid.T_Left_Thigh_Link  = 0.16;
     humanoid.T_Left_Calf_Link   = -0.24;
     humanoid.T_Left_Foot_Link   = 0.0;
 

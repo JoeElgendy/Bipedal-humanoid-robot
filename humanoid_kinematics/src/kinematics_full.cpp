@@ -6,6 +6,7 @@
 /****************************************************************/
 #include "kinematics_full.h"
 
+
 void kinematics_full::fread_Right_Upper_Shoulder_Link(const control_msgs::JointControllerState::ConstPtr& msg){
     Right_Arm_jntarray.data[0] = msg->process_value;
 }
@@ -89,6 +90,7 @@ kinematics_full::kinematics_full(ros::NodeHandle *n,std::string urdf,std::string
     read_Left_Thigh_Link = n->subscribe("/humanoid/Left_Thigh_joint_position/state", 1000, &kinematics_full::fread_Left_Thigh_Link, this);
     read_Left_Calf_Link = n->subscribe("/humanoid/Left_Calf_Joint_position/state", 1000, &kinematics_full::fread_Left_Calf_Link, this);
     read_Left_Foot_Link = n->subscribe("/humanoid/Left_foot_Joint_position/state", 1000, &kinematics_full::fread_Left_Foot_Link, this);
+    KDL::Chain Base_Chain;
 
     if(!kdl_parser::treeFromFile(urdf,humanoid_tree)){
         std::cout << "Failed to construct kdl tree \n" ;
@@ -244,11 +246,12 @@ void kinematics_full::joint_publish(ros::Rate *r){
     std_msgs::Float64 radi;
 
     //ros::Duration duration(1/20);
-    radi.data= Right_Upper_Shoulder_Link; if(radi.data) pb_Right_Upper_Shoulder_Link.publish(radi);
-    radi.data = Right_Mid_Shoulder_Link;  if(radi.data) pb_Right_Mid_Shoulder_Link.publish(radi);
-    radi.data = Right_Lower_Shoulder_Link;if(radi.data) pb_Right_Lower_Shoulder_Link.publish(radi);
+    
+    radi.data = Right_Upper_Shoulder_Link; if(radi.data) pb_Right_Upper_Shoulder_Link.publish(radi);
+    radi.data = Right_Mid_Shoulder_Link  ;  if(radi.data) pb_Right_Mid_Shoulder_Link.publish(radi);
+    radi.data = Right_Lower_Shoulder_Link  ;if(radi.data) pb_Right_Lower_Shoulder_Link.publish(radi);
 
-    radi.data = Right_Hip_Link;   if(radi.data) pb_Right_Hip_Link.publish(radi);
+    radi.data = Right_Hip_Link ;   if(radi.data) pb_Right_Hip_Link.publish(radi);
     radi.data = Right_Thigh_Link; if(radi.data) pb_Right_Thigh_Link.publish(radi);
     radi.data = Right_Calf_Link;  if(radi.data) pb_Right_Calf_Link.publish(radi);
     radi.data = Right_Foot_Link;  if(radi.data) pb_Right_Foot_Link.publish(radi);
@@ -261,7 +264,7 @@ void kinematics_full::joint_publish(ros::Rate *r){
     radi.data = Left_Thigh_Link;if(radi.data) pb_Left_Thigh_Link.publish(radi);
     radi.data = Left_Calf_Link; if(radi.data) pb_Left_Calf_Link.publish(radi);
     radi.data = Left_Foot_Link; if(radi.data) pb_Left_Foot_Link.publish(radi);
-
+    
    // duration.sleep();
     r->sleep();
 }
@@ -337,7 +340,7 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
         Right_Arm_CoM.x+=link_cog_refbase.data[0]*Right_Arm_Chain.getSegment(i).getInertia().getMass();
         Right_Arm_CoM.y+=link_cog_refbase.data[1]*Right_Arm_Chain.getSegment(i).getInertia().getMass();
         Right_Arm_CoM.z+=link_cog_refbase.data[2]*Right_Arm_Chain.getSegment(i).getInertia().getMass();
-        Right_Arm_CoM.mass=Right_Arm_Chain.getSegment(i).getInertia().getMass();
+        Right_Arm_CoM.mass+=Right_Arm_Chain.getSegment(i).getInertia().getMass();
     if(verbose){
                 std::cout << std::setprecision(5)<< i<<".) state ="
                           <<" " <<Right_Arm_Chain.getSegment(i).getName()<<" mass =" << Right_Arm_Chain.getSegment(i).getInertia().getMass()
@@ -435,29 +438,20 @@ point_mass kinematics_full::compute_com(char state,KDL::ChainFkSolverPos_recursi
 
             }
         
-        //std::cout <<"right arm .x "<<Right_Arm_CoM.x << "\t right arm .y"<<Right_Arm_CoM.y << "\n";
-        //std::cout<<"right arm mass"<<Right_Arm_CoM.mass<<"\n";
-        //std::cout <<"left arm .x "<<Left_Arm_CoM.x << "\t left arm .y"<<Left_Arm_CoM.y << "\n";
-        //std::cout<<"left arm mass"<<Left_Arm_CoM.mass<<"\n";
-        //std::cout <<"right leg .x "<<Right_Leg_CoM.x << "\t right leg .y"<<Right_Leg_CoM.y << "\n" << "\t right leg .z"<<Right_Leg_CoM.z << "\n";
-        //std::cout<<"right leg mass"<<Right_Leg_CoM.mass<<"\n";
-        //std::cout <<"left leg .x "<<Left_Leg_CoM.x << "\t left leg .y"<<Left_Leg_CoM.y << "\n" << "\t left leg .z"<<Left_Leg_CoM.z << "\n";
-        //std::cout<<"left leg mass"<<Left_Leg_CoM.mass<<"\n";
-        
-            humanoid_CoM.x=(Right_Leg_CoM.x+Left_Leg_CoM.x+Right_Arm_CoM.x+Left_Arm_CoM.x)/(Right_Leg_CoM.mass+Left_Leg_CoM.mass+Right_Arm_CoM.mass+Left_Arm_CoM.mass);
-            humanoid_CoM.y=(Right_Leg_CoM.y+Left_Leg_CoM.y+Right_Arm_CoM.y+Left_Arm_CoM.y)/(Right_Leg_CoM.mass+Left_Leg_CoM.mass+Right_Arm_CoM.mass+Left_Arm_CoM.mass);
-            humanoid_CoM.z=(Right_Leg_CoM.z+Left_Leg_CoM.z+Right_Arm_CoM.z+Left_Arm_CoM.z)/(Right_Leg_CoM.mass+Left_Leg_CoM.mass+Right_Arm_CoM.mass+Left_Arm_CoM.mass);
+            humanoid_CoM.mass=(Right_Leg_CoM.mass+Left_Leg_CoM.mass+Right_Arm_CoM.mass+Left_Arm_CoM.mass);
+            humanoid_CoM.x=(Right_Leg_CoM.x+Left_Leg_CoM.x+Right_Arm_CoM.x+Left_Arm_CoM.x)/humanoid_CoM.mass;
+            humanoid_CoM.y=(Right_Leg_CoM.y+Left_Leg_CoM.y+Right_Arm_CoM.y+Left_Arm_CoM.y)/humanoid_CoM.mass;
+            humanoid_CoM.z=(Right_Leg_CoM.z+Left_Leg_CoM.z+Right_Arm_CoM.z+Left_Arm_CoM.z)/humanoid_CoM.mass;
             
-            //std::cout<< "humanoid CoM .x "<<humanoid_CoM.x << "\t humanoid CoM .y"<<humanoid_CoM.y << "\n" <<"\t humanoid CoM z "<<humanoid_CoM.z << "\n";
         return humanoid_CoM;
 }
 
 point_mass kinematics_full::compute_centroid(char state,bool verbose){
         if (state == 'r' || state == 'l') 
         {
-            centroid.x = 0;
-            centroid.y = 0;
-            centroid.z = 0;
+            centroid.x = (Left_Foot.p.data[0] + Right_Foot.p.data[0] + Right_Lower_Shoulder.p.data[0] + Left_Lower_Shoulder.p.data[0]) / 4.0;
+            centroid.y = (Left_Foot.p.data[1] + Right_Foot.p.data[1] + Right_Lower_Shoulder.p.data[1] + Left_Lower_Shoulder.p.data[1]) / 4.0;
+            centroid.z = (Left_Foot.p.data[2] + Right_Foot.p.data[2] + Right_Lower_Shoulder.p.data[2] + Left_Lower_Shoulder.p.data[2]) / 4.0;
         } 
         else if (state == 'd') 
         {
@@ -485,7 +479,7 @@ stability kinematics_full::quick_is_stable(bool verbose){
         if (centroid.x + foot_x_size2 < humanoid_CoM.x && humanoid_CoM.x < centroid.x + foot_x_size)
         {
             out.x = true;
-            if (verbose)
+            if (1)
             {
                 std::cout << "x is stable\n";
             }
@@ -500,6 +494,237 @@ stability kinematics_full::quick_is_stable(bool verbose){
             }
         }
 }
+void kinematics_full::calculate_values(char state, double *Right_Thigh_Link , double *Right_Calf_Link, double *Left_Thigh_Link,double *Left_Calf_Link, double *Right_Foot_Link,double *Left_Foot_Link,double *Right_Upper_Shoulder_Link,double *Left_Upper_Shoulder_Link){
+    if (state == 'r'){
+        if (*Right_Thigh_Link <0.12 ){
+            *Right_Thigh_Link = 0.12;
+            *Left_Thigh_Link  = -0.12;
+            *Right_Calf_Link  = -0.1;
+            *Left_Calf_Link   = 0.1;
+            *Right_Foot_Link  =0.04;
+            *Left_Foot_Link   =0.04;
+        }
+        else if((*Right_Thigh_Link >= 0.12) && (*Right_Thigh_Link <= 0.14)){
+            *Right_Thigh_Link = 0.14;
+            *Left_Thigh_Link= -0.14;
+            *Right_Calf_Link= -0.12;
+            *Left_Calf_Link = 0.12;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        else if((*Right_Thigh_Link >=0.14) && (*Right_Thigh_Link <= 0.16)){
+            *Right_Thigh_Link = 0.16;
+            *Left_Thigh_Link=-0.16;
+            *Right_Calf_Link=-0.14;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        
+        else if((*Right_Thigh_Link >= 0.16) && (*Right_Thigh_Link <= 0.18)){
+            *Right_Thigh_Link = 0.18;
+            *Left_Thigh_Link=-0.18;
+            *Right_Calf_Link=-0.16;
+            *Left_Calf_Link =0.16;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        else if((*Right_Thigh_Link >= 0.18) && (*Right_Thigh_Link <= 0.2)){
+            *Right_Thigh_Link = 0.2;
+            *Left_Thigh_Link=-0.2;
+            *Right_Calf_Link=-0.18;
+            *Left_Calf_Link =0.18;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        
+        else if((*Right_Thigh_Link >= 0.2) && (*Right_Thigh_Link <= 0.22)){
+            *Right_Thigh_Link = 0.22;
+            *Left_Thigh_Link=-0.22;
+            *Right_Calf_Link=-0.2;
+            *Left_Calf_Link =0.16;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+            
+        }
+        else if((*Right_Thigh_Link >= 0.22) && (*Right_Thigh_Link <= 0.24)){
+            *Right_Thigh_Link = 0.24;
+            *Left_Thigh_Link=-0.24;
+            *Right_Calf_Link=-0.22;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=0.05;
+            *Left_Upper_Shoulder_Link=-0.05;
+        }
+        else if((*Right_Thigh_Link >= 0.24) && (*Right_Thigh_Link <= 0.26)){
+            *Right_Thigh_Link = 0.24;
+            *Left_Thigh_Link=-0.24;
+            *Right_Calf_Link=-0.22;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=0.05;
+            *Left_Upper_Shoulder_Link=-0.05;
+        }
+        else if((*Right_Thigh_Link >= 0.26) && (*Right_Thigh_Link <= 0.28)){
+            *Right_Thigh_Link = 0.28;
+            *Left_Thigh_Link=-0.28;
+            *Right_Calf_Link=-0.26;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=0.05;
+            *Left_Upper_Shoulder_Link=-0.05;
+        }
+        else if((*Right_Thigh_Link >= 0.28) && (*Right_Thigh_Link <= 0.3)){
+            *Right_Thigh_Link = 0.24;
+            *Left_Thigh_Link=-0.24;
+            *Right_Calf_Link=-0.22;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=0.05;
+            *Left_Upper_Shoulder_Link=-0.05;
+        }
+        else if((*Right_Thigh_Link >= 0.3) && (*Right_Thigh_Link <= 0.32)){
+            *Right_Thigh_Link = 0.24;
+            *Left_Thigh_Link=-0.24;
+            *Right_Calf_Link=-0.22;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=0.05;
+            *Left_Upper_Shoulder_Link=-0.05;
+        }
+        else if((*Right_Thigh_Link >= 0.32) ){
+            *Right_Thigh_Link = 0.24;
+            *Left_Thigh_Link=-0.24;
+            *Right_Calf_Link=-0.22;
+            *Left_Calf_Link =0.14;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=0.05;
+            *Left_Upper_Shoulder_Link=-0.05;;
+        }
+    }
+    if (state == 'l'){
+        if (*Left_Thigh_Link <0.12 ){
+            *Right_Thigh_Link = -0.12;
+            *Left_Thigh_Link= 0.12;
+            *Right_Calf_Link= 0.1;
+            *Left_Calf_Link = -0.1;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        else if((*Left_Thigh_Link >= 0.12) && (*Left_Thigh_Link <= 0.14)){
+            *Right_Thigh_Link = -0.14;
+            *Left_Thigh_Link= 0.14;
+            *Right_Calf_Link= 0.12;
+            *Left_Calf_Link = -0.12;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        else if((*Left_Thigh_Link >=0.14) && (*Left_Thigh_Link <= 0.16)){
+            *Right_Thigh_Link =- 0.16;
+            *Left_Thigh_Link=0.16;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.14;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        else if((*Left_Thigh_Link >= 0.16) && (*Left_Thigh_Link <= 0.18)){
+            *Right_Thigh_Link =- 0.18;
+            *Left_Thigh_Link=0.18;
+            *Right_Calf_Link=0.16;
+            *Left_Calf_Link =-0.16;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        
+        else if((*Left_Thigh_Link >= 0.18) && (*Left_Thigh_Link <= 0.2)){
+            *Right_Thigh_Link =- 0.2;
+            *Left_Thigh_Link=0.2;
+            *Right_Calf_Link=0.18;
+            *Left_Calf_Link =-0.18;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+        }
+        else if((*Left_Thigh_Link >= 0.2) && (*Left_Thigh_Link <= 0.22)){
+            *Right_Thigh_Link =- 0.22;
+            *Left_Thigh_Link=0.22;
+            *Right_Calf_Link=0.16;
+            *Left_Calf_Link =-0.2;
+            *Right_Foot_Link=0.04;
+            *Left_Foot_Link=0.04;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        else if((*Left_Thigh_Link >= 0.22) && (*Left_Thigh_Link <= 0.24)){
+            *Right_Thigh_Link = -0.24;
+            *Left_Thigh_Link=0.24;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.22;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        else if((*Left_Thigh_Link >= 0.24) && (*Left_Thigh_Link <= 0.26)){
+            *Right_Thigh_Link = -0.24;
+            *Left_Thigh_Link=0.24;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.22;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        else if((*Left_Thigh_Link >= 0.26) && (*Left_Thigh_Link <= 0.28)){
+            *Right_Thigh_Link = -0.24;
+            *Left_Thigh_Link=0.24;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.22;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        else if((*Left_Thigh_Link >= 0.28) && (*Left_Thigh_Link <= 0.3)){
+            *Right_Thigh_Link = -0.24;
+            *Left_Thigh_Link=0.24;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.22;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        else if((*Left_Thigh_Link >= 0.3) && (*Left_Thigh_Link <= 0.32)){
+            *Right_Thigh_Link = -0.24;
+            *Left_Thigh_Link=0.24;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.22;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        else if((*Left_Thigh_Link >= 0.32) ){
+            *Right_Thigh_Link = -0.24;
+            *Left_Thigh_Link=0.24;
+            *Right_Calf_Link=0.14;
+            *Left_Calf_Link =-0.22;
+            *Right_Foot_Link=0.06;
+            *Left_Foot_Link=0.06;
+            *Right_Upper_Shoulder_Link=-0.05;
+            *Left_Upper_Shoulder_Link=0.05;
+        }
+        
+    }
+}
+
+
 
 bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver,ros::Rate *rate , int freq=200){
             jntstate[0]= ((T_Right_Upper_Shoulder_Link - Right_Upper_Shoulder_Link)/freq);
@@ -541,9 +766,10 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
                 kinematics_full::add_jointpose(jntstate);
                 kinematics_full::set_kdjointpose();
                 humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver);
+                std::cout << "The mass is = " << humanoid_CoM.mass;
                 std::cout << "The humanoid_CoM of x is =" << humanoid_CoM.x << "\t y =" << humanoid_CoM.y << "\t z =" << humanoid_CoM.z << std::endl; 
                 centroid=kinematics_full::compute_centroid(state,0);
-                std::cout << "The centroid of x is =" << centroid.x << "\t y =" << centroid.y << "\t z =" << centroid.z << std::endl;
+              //  std::cout << "The centroid of x is =" << centroid.x << "\t y =" << centroid.y << "\t z =" << centroid.z << std::endl;
                 humanoid_stability=kinematics_full::quick_is_stable(0);
                 stable=humanoid_stability.check();
                 error_x = humanoid_CoM.x - centroid.x; 
@@ -567,35 +793,49 @@ bool kinematics_full::humanoid_will_go_on(char state, KDL::ChainFkSolverPos_recu
                 if(state == 'r'){
                     Right_Thigh_Link += (P_y + I_y + D_y); //
                     Right_Calf_Link +=(P_x + I_x + D_x); //
-                    if (Right_Thigh_Link > 0.24) Right_Thigh_Link = 0.24; else if (Right_Thigh_Link < -0.24) Right_Thigh_Link = -0.24;
-                    if (Right_Calf_Link > 0.24) Right_Calf_Link = 0.24; else if (Right_Calf_Link < -0.24) Right_Calf_Link = -0.24;
-                 /*   if(Left_Foot.p.data[1]<0.16){
+                    std::cout << "Right_Thigh_Before_Link"<<Right_Thigh_Link << "\t"<< "Left_Thigh_Link before function"  << Left_Thigh_Link <<  std::endl;
+
+                //if (Right_Thigh_Link > Right_Thigh_Limit) Right_Thigh_Link = Right_Thigh_Limit; else if (Right_Thigh_Link < -Right_Thigh_Limit) Right_Thigh_Link = -Right_Thigh_Limit;
+                //if (Right_Calf_Link > Right_Calf_Limit) Right_Calf_Link = Right_Calf_Limit; else if (Right_Calf_Link < -Right_Calf_Limit) Right_Calf_Link = -Right_Calf_Limit;
+                  /* if(Left_Foot.p.data[1]<0.16){
                         Left_Foot_Link += kp /3 * (Right_Foot.p.data[1]+0.16);
                     }*/
-                    
-                }
+                    kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
+                    std::cout << "Right_Thigh_Before_Link"<<Right_Thigh_Link << "\t" << "Left_Thigh_Link after function" <<"\t"<< Left_Thigh_Link << std::endl;
+
+                    }
                 else if(state == 'l'){
                     Left_Calf_Link += (P_y + I_y + D_y);
                     Left_Thigh_Link +=(P_x + I_x + D_x);
-                    if (Left_Thigh_Link > 0.24) Left_Thigh_Link = 0.24; else if (Left_Thigh_Link < -0.24) Left_Thigh_Link = -0.24;
-                    if (Left_Calf_Link > 0.24) Left_Calf_Link = 0.24; else if (Left_Calf_Link < -0.24) Left_Calf_Link = -0.24;
+                //if (Left_Thigh_Link > Left_Thigh_Limit) Left_Thigh_Link = Left_Thigh_Limit; else if (Left_Thigh_Link < -Left_Thigh_Limit) Left_Thigh_Link = -Left_Thigh_Limit;
+                //if (Left_Calf_Link > Left_Calf_Limit) Left_Calf_Link = Left_Calf_Limit; else if (Left_Calf_Link < -Left_Calf_Limit) Left_Calf_Link = -Left_Calf_Limit;
+                //std::cout << "Left_Thigh_Link before function" <<"\t" << Left_Thigh_Link << "Right_Thigh_Link"<<Right_Thigh_Link<< std::endl;
+//
+                kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
+//
+                //std::cout << "Left_Thigh_Link after function" <<"\t" << Left_Thigh_Link << "Right_Thigh_Link"<<Right_Thigh_Link<< std::endl;
 
                     /*if(Right_Foot.p.data[1]>-0.16){
                         Right_Foot_Link += kp /3 * (Left_Foot.p.data[1]+0.16);
                     } */
                 }
+                //
                 else if(state == 'd'){
-                  Right_Calf_Link   += (P_y + I_y + D_y);
+                  Right_Calf_Link   -= (P_y + I_y + D_y);
                   Right_Thigh_Link += (P_x + I_x + D_x);
                   Left_Calf_Link    -= (P_y + I_y + D_y);
                   Left_Thigh_Link  += (P_x + I_x + D_x);
+                  //Right_Foot_Link =0.0;
+                  //Left_Foot_Link  =0.0;
+                std::cout <<"without limits Right_Calf_Link"<< Right_Calf_Link << "\t" << "Left_Calf_Link" << Left_Calf_Link << "\t" <<"Right_Thigh"<< Right_Thigh_Link << "\t" << "Left_Thigh_Link" << Left_Thigh_Link << std::endl;
 
-                  if (Right_Thigh_Link > 0.24) Right_Thigh_Link = 0.24; else if (Right_Thigh_Link < -0.24) Right_Thigh_Link = -0.24;
-                  if (Right_Calf_Link > 0.24) Right_Calf_Link = 0.24; else if (Right_Calf_Link < -0.24) Right_Calf_Link = -0.24;
-                  if (Left_Thigh_Link > 0.24) Left_Thigh_Link = 0.24; else if (Left_Thigh_Link < -0.24) Left_Thigh_Link = -0.24;
-                  if (Left_Calf_Link > 0.24) Left_Calf_Link = 0.24; else if (Left_Calf_Link < -0.24) Left_Calf_Link = -0.24;
-                
-                }
+                  if (Right_Thigh_Link > Right_Thigh_Limit) Right_Thigh_Link = Right_Thigh_Limit; else if (Right_Thigh_Link < -Right_Thigh_Limit) Right_Thigh_Link = -Right_Thigh_Limit;
+                  if (Right_Calf_Link > Right_Calf_Limit) Right_Calf_Link = Right_Calf_Limit; else if (Right_Calf_Link < -Right_Calf_Limit) Right_Calf_Link = -Right_Calf_Limit;
+                  if (Left_Thigh_Link > Left_Thigh_Limit) Left_Thigh_Link = Left_Thigh_Limit; else if (Left_Thigh_Link < -Left_Thigh_Limit) Left_Thigh_Link = -Left_Thigh_Limit;
+                  if (Left_Calf_Link > Left_Calf_Limit) Left_Calf_Link = Left_Calf_Limit; else if (Left_Calf_Link < -Left_Calf_Limit) Left_Calf_Link = -Left_Calf_Limit;
+                //kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
+                                    }
+                //kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
                 kinematics_full::joint_publish(rate);
                 kinematics_full::com_publish(state,rate);          
         }
@@ -636,7 +876,7 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
             P_limit=0.2/freq;
             I_limit=4.0/freq;
             D_limit=20000.0/freq;
-
+         //   std::cout << "The centroid of x is ely bara =" << centroid.x << "\t y =" << centroid.y << "\t z =" << centroid.z << std::endl; 
             for(int k=0 ; k<freq ; k++){
                 kinematics_full::add_jointpose(jntstate);
                 //Right_Foot_Link = 0 - (Right_Thigh_Link + Right_Calf_Link);
@@ -644,6 +884,7 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 kinematics_full::set_kdjointpose();
                 humanoid_CoM=kinematics_full::compute_com(state,Right_Leg_fk_solver,Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver);
                 centroid=kinematics_full::compute_centroid(state,0);
+              //  std::cout << "The centroid of x is =" << centroid.x << "\t y =" << centroid.y << "\t z =" << centroid.z << std::endl;
                 humanoid_stability=kinematics_full::quick_is_stable(0);
                 stable=humanoid_stability.check();
                 // l7d el a5er 
@@ -673,7 +914,11 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                // Right_Hip_Link += (P_y + I_y + D_y);
                 //Right_Thigh_Link -= (P_x + I_x + D_x);
                 Right_Thigh_Link -= kp * te_x;
-                Right_Calf_Link -= kp * te_y;
+                std::cout <<"state"<<state<<"\t"<< "Right_Thigh_Link" << Right_Thigh_Link << std::endl;
+
+                Right_Calf_Link -= kp * te_x;
+                std::cout <<"state"<<state<<"\t"<< "Right_Calf_Link" << Right_Thigh_Link << std::endl;
+
 
                 /*if (Left_Foot.p.data[1] < 0.16)
                 {
@@ -681,21 +926,29 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
                 }*/
                 //Left_Hip_Link -= kp * te_y;
                 Left_Thigh_Link += kp * te_x;
-                Left_Calf_Link -= kp * te_y;
-                if (Left_Thigh_Link > 0.24) Left_Thigh_Link = 0.24; else if (Left_Thigh_Link < -0.24) Left_Thigh_Link = -0.24;
-                if (Left_Calf_Link > 0.24) Left_Calf_Link = 0.24; else if (Left_Calf_Link < -0.24) Left_Calf_Link = -0.24;
-                if (Right_Thigh_Link > 0.24) Right_Thigh_Link = 0.24; else if (Right_Thigh_Link < -0.24) Right_Thigh_Link = -0.24;
-                if (Right_Calf_Link > 0.24) Right_Calf_Link = 0.24; else if (Right_Calf_Link < -0.24) Right_Calf_Link = -0.24;
+                std::cout <<"state"<<state << "Left_Thigh_Link" << Left_Thigh_Link << std::endl;
+                Left_Calf_Link += kp * te_x;
+                std::cout <<"state"<<state << "Left_Calf_Link" << Left_Calf_Link << std::endl;
+                
+                //if (Left_Thigh_Link > Left_Thigh_Limit) Left_Thigh_Link = Left_Thigh_Limit; else if (Left_Thigh_Link < -Left_Thigh_Limit) Left_Thigh_Link = -Left_Thigh_Limit;
+                //if (Left_Calf_Link > Left_Calf_Limit) Left_Calf_Link = Left_Calf_Limit; else if (Left_Calf_Link < -Left_Calf_Limit) Left_Calf_Link = -Left_Calf_Limit;
+                //if (Right_Thigh_Link > Right_Thigh_Limit) Right_Thigh_Link = Right_Thigh_Limit; else if (Right_Thigh_Link < -Right_Thigh_Limit) Right_Thigh_Link = -Right_Thigh_Limit;
+                //if (Right_Calf_Link > Right_Calf_Limit) Right_Calf_Link = Right_Calf_Limit; else if (Right_Calf_Link < -Right_Calf_Limit) Right_Calf_Link = -Right_Calf_Limit;
+                //kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
             }
             else if (state == 'l')
             {
                 te_x = Right_Foot.p.data[0] - target[0];
                 te_y = Right_Foot.p.data[1] - target[1];
                 te_z = Right_Foot.p.data[2] - target[2];
-               // Left_Hip_Link += (P_y + I_y + D_y);
+                ///Left_Hip_Link += (P_y + I_y + D_y);
                 //Left_Thigh_Link -= (P_x + I_x + D_x);
                 Left_Thigh_Link -= kp * te_x;
-                Left_Calf_Link -= kp * te_y;
+                std::cout <<"state"<<state << "Left_Thigh_Link" << Left_Thigh_Link << std::endl;
+
+                Left_Calf_Link -= kp * te_x;
+                std::cout <<"state"<<state << "Left_Calf_Link" << Left_Calf_Link << std::endl;
+
 
                  /*if (Right_Foot.p.data[1] > -0.16)
                 {
@@ -704,30 +957,41 @@ bool kinematics_full::move_leg(double *target, char state, KDL::ChainFkSolverPos
 
                 // Right_Hip_Link -= kp * te_y;
                 Right_Thigh_Link += kp * te_x;
-                Right_Calf_Link -= kp * te_y;
-                if (Left_Thigh_Link > 0.3) Left_Thigh_Link = 0.3; else if (Left_Thigh_Link < -0.3) Left_Thigh_Link = -0.3;
-                if (Left_Calf_Link > 0.28) Left_Calf_Link = 0.28; else if (Left_Calf_Link < -0.28) Left_Calf_Link = -0.28;
-                if (Right_Thigh_Link > 0.3) Right_Thigh_Link = 0.3; else if (Right_Thigh_Link < -0.3) Right_Thigh_Link = -0.3;
-                if (Right_Calf_Link > 0.28) Right_Calf_Link = 0.28; else if (Right_Calf_Link < -0.28) Right_Calf_Link = -0.28;
+                std::cout <<"state"<<state<<"\t"<< "Right_Thigh_Link" << Right_Thigh_Link << std::endl;
 
+                Right_Calf_Link += kp * te_x;
+                std::cout <<"state"<<state<<"\t"<< "Right_Calf_Link" << Right_Thigh_Link << std::endl;
+
+                //if (Left_Thigh_Link > Left_Thigh_Limit) Left_Thigh_Link = Left_Thigh_Limit; else if (Left_Thigh_Link < -Left_Thigh_Limit) Left_Thigh_Link = -Left_Thigh_Limit;
+                //if (Left_Calf_Link > Left_Calf_Limit) Left_Calf_Link = Left_Calf_Limit; else if (Left_Calf_Link < -Left_Calf_Limit) Left_Calf_Link = -Left_Calf_Limit;
+                //if (Right_Thigh_Link > Right_Thigh_Limit) Right_Thigh_Link = Right_Thigh_Limit; else if (Right_Thigh_Link < -Right_Thigh_Limit) Right_Thigh_Link = -Right_Thigh_Limit;
+                //if (Right_Calf_Link > Right_Calf_Limit) Right_Calf_Link = Right_Calf_Limit; else if (Right_Calf_Link < -Right_Calf_Limit) Right_Calf_Link = -Right_Calf_Limit;
+                //kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
             }
             else if (state == 'd')
             {
-                Right_Calf_Link   += (P_y + I_y + D_y);
-                Right_Thigh_Link += (P_x + I_x + D_x);
-                Left_Calf_Link    -= (P_y + I_y + D_y);
-                Left_Thigh_Link  += (P_x + I_x + D_x);
-                if (Right_Thigh_Link > 0.3) Right_Thigh_Link = 0.3; else if (Right_Thigh_Link < -0.3) Right_Thigh_Link = -0.3;
-                if (Right_Calf_Link > 0.28) Right_Calf_Link = 0.28; else if (Right_Calf_Link < -0.28) Right_Calf_Link = -0.28;
-                if (Left_Thigh_Link > 0.3) Left_Thigh_Link = 0.3; else if (Left_Thigh_Link < -0.3) Left_Thigh_Link = -0.3;
-                if (Left_Calf_Link > 0.28) Left_Calf_Link = 0.28; else if (Left_Calf_Link < -0.28) Left_Calf_Link = -0.28;
+                Right_Calf_Link   += kp*te_x;
+                Right_Thigh_Link += kp*te_x;
+                Left_Calf_Link    -= kp*te_x;
+                Left_Thigh_Link  += kp*te_x;
+                //if (Left_Thigh_Link > Left_Thigh_Limit) Left_Thigh_Link = Left_Thigh_Limit; else if (Left_Thigh_Link < -Left_Thigh_Limit) Left_Thigh_Link = -Left_Thigh_Limit;
+                //if (Left_Calf_Link > Left_Calf_Limit) Left_Calf_Link = Left_Calf_Limit; else if (Left_Calf_Link < -Left_Calf_Limit) Left_Calf_Link = -Left_Calf_Limit;
+                //if (Right_Thigh_Link > Right_Thigh_Limit) Right_Thigh_Link = Right_Thigh_Limit; else if (Right_Thigh_Link < -Right_Thigh_Limit) Right_Thigh_Link = -Right_Thigh_Limit;
+                //if (Right_Calf_Link > Right_Calf_Limit) Right_Calf_Link = Right_Calf_Limit; else if (Right_Calf_Link < -Right_Calf_Limit) Right_Calf_Link = -Right_Calf_Limit;
+                //kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
 
                 }
+
+            kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
+            std::cout <<"state"<<state<< "Left_Thigh_Link after function" << Left_Thigh_Link << "Right_Thigh_Link"<<Right_Thigh_Link<< std::endl;
+
             kinematics_full::joint_publish(rate);
             kinematics_full::com_publish(state,rate);
             }
+            //kinematics_full::calculate_values(state, &Right_Thigh_Link , &Right_Calf_Link, &Left_Thigh_Link,&Left_Calf_Link,&Right_Foot_Link,&Left_Foot_Link,&Right_Upper_Shoulder_Link,&Left_Upper_Shoulder_Link);
+            
             kinematics_full::set_T_equal_jointpose();
-            std::cout<< "humanoid CoM .x "<<humanoid_CoM.x << "\t humanoid CoM .y"<<humanoid_CoM.y << "\n" <<"\t humanoid CoM z "<<humanoid_CoM.z << "\n";
+            //std::cout<< "humanoid CoM .x "<<humanoid_CoM.x << "\t humanoid CoM .y"<<humanoid_CoM.y << "\n" <<"\t humanoid CoM z "<<humanoid_CoM.z << "\n";
 };
 void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate, kinematics_full *humanoid, KDL::ChainFkSolverPos_recursive *Right_Leg_fk_solver, KDL::ChainFkSolverPos_recursive *Left_Leg_fk_solver,KDL::ChainFkSolverPos_recursive *Right_Arm_fk_solver,KDL::ChainFkSolverPos_recursive *Left_Arm_fk_solver)
 {
@@ -748,11 +1012,11 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
         
         char foot = msg->poses[idx].header.frame_id[0];
         char foot_stance;
-        if (foot == 'r')
+        if (foot == 'R')
         {
             foot_stance = 'l';
         }
-        if (foot == 'l')
+        if (foot == 'L')
         {
             foot_stance = 'r';
         }
@@ -760,33 +1024,34 @@ void get_path(const nav_msgs::Path::ConstPtr &msg, int sampling, ros::Rate *rate
         humanoid->humanoid_will_go_on(foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling * 1.5);
         if (foot_stance == 'r')
         {
-            humanoid->T_Right_Thigh_Link = 0.25;
-            humanoid->T_Right_Calf_Link = 0.25;
+            humanoid->T_Right_Thigh_Link = 0.21;
+            humanoid->T_Right_Calf_Link = 0.2;
 
-            humanoid->T_Left_Thigh_Link = 0.25;
-            humanoid->T_Left_Calf_Link = -0.25;
-
+            humanoid->T_Left_Thigh_Link = -0.21;
+            humanoid->T_Left_Calf_Link = -0.2;
 
         }
         else if (foot_stance == 'l')
         {
-            humanoid->T_Left_Thigh_Link = 0.14;
-            humanoid->T_Left_Calf_Link = -0.24;
+            humanoid->T_Left_Thigh_Link = 0.21;
+            humanoid->T_Left_Calf_Link = 0.2;
 
-            humanoid->T_Right_Thigh_Link = 0.14;
-            humanoid->T_Right_Calf_Link = 0.24;
+            humanoid->T_Right_Thigh_Link = -0.21;
+            humanoid->T_Right_Calf_Link = -0.2;
 
 
         }
         humanoid->humanoid_will_go_on(foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling);
         double tfoot[3] = {x, y, 0.0};
         humanoid->move_leg(tfoot, foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling * 2);
+        humanoid->move_leg(tfoot, foot_stance, Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling * 2);
+
         humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver, Left_Leg_fk_solver,Right_Arm_fk_solver,Left_Arm_fk_solver,rate, sampling);
     }
-    humanoid->T_Right_Thigh_Link = 0.14;
-    humanoid->T_Right_Calf_Link = 0.24;
-    humanoid->T_Left_Thigh_Link = 0.14;
-    humanoid->T_Left_Calf_Link = -0.24;
+    humanoid->T_Right_Thigh_Link = 0.21;
+    humanoid->T_Right_Calf_Link = -0.2;
+    humanoid->T_Left_Thigh_Link = 0.21;
+    humanoid->T_Left_Calf_Link = -0.2;
     humanoid->humanoid_will_go_on('d', Right_Leg_fk_solver,Left_Leg_fk_solver, Right_Arm_fk_solver,Left_Arm_fk_solver,rate, 100);
     std::cout << "Finish! \n";
 }
