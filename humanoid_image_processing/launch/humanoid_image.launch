@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<launch>
+
+      <arg name="humanoid_control" default="true"/>
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+     <arg name="paused" default="true"/>
+     <arg name="use_sim_time" default="true"/>
+     <arg name="gui" default="true"/>
+     <arg name="headless" default="false"/>
+     <arg name="debug" default="false"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find humanoid_gazebo)/worlds/empty.world"/>
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+      </include>
+     <!-- Load the URDF into the ROS Parameter Server -->
+    <param name="robot_description" command="cat $(find humanoid_descripition)/urdf/humanoid.urdf"/> 
+
+
+    <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model humanoid -z 0 -param robot_description"/>
+
+
+    <node name= "colour_detection" pkg = 'humanoid_image_processing' type = 'colour_detection.py' />
+
+    <node name= "waving" pkg = 'humanoid_image_processing' type = 'waving.py'  />
+
+    <!-- ros_control robotis humanoid launch file -->
+  <group if ="$(arg humanoid_control)">
+    <include file="$(find humanoid_gazebo)/launch/humanoid_control.launch" />
+  </group>
+
+
+
+</launch>
